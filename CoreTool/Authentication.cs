@@ -19,6 +19,7 @@ namespace MinecraftW10Downloader
                 return File.ReadAllText("token.txt");
             }
 
+            // Get the token using the token helper
             String token;
             if (GetWUToken(out token) != 0)
             {

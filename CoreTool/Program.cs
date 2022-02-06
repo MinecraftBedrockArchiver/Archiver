@@ -40,16 +40,20 @@ namespace MinecraftW10Downloader
             List<string> revisionIds = new List<string>();
             List<string> names = new List<string>();
 
+            // Set the download dir
+            // TODO: Make this configurable
             string downloadDir = @"\\192.168.1.5\Archive\Minecraft\Windows10 - Microsoft.MinecraftUWP_8wekyb3d8bbwe\";
 
             Console.WriteLine("Fetching versionsdb");
 
+            // Fetch the versiondb
             HttpResponseMessage response = await client.GetAsync("https://raw.githubusercontent.com/MCMrARM/mc-w10-versiondb/master/versions.txt");
-
             string body = await response.Content.ReadAsStringAsync();
 
+            // Read and process each line
             foreach (string line in body.Split(new[] { '\n' }))
             {
+                // Parse the line and get the relevent information
                 string[] lineParts = line.Split(new[] { ' ' });
                 
                 if (lineParts.Length < 2) continue;
@@ -57,16 +61,27 @@ namespace MinecraftW10Downloader
                 string updateId = lineParts[0];
                 string name = lineParts[1];
 
+                // Ignore EAppx and .70 releases as they are encrypted
+                // TODO? Add functionality for this
                 if (name.Contains("EAppx") || name.Contains(".70_")) continue;
 
-                name = name.Replace(".EAppx", "").Replace(".Appx", "");
+                name = name.Replace(".Appx", "");
+
+                // Check the file doesnt already exist
+                string outPath = Path.Join(downloadDir, name + ".Appx");
+                if (File.Exists(outPath))
+                {
+                    Console.WriteLine(name + " - Already downloaded!");
+                    continue;
+                }
 
                 updateIds.Add(updateId);
                 names.Add(name);
             }
 
-            Console.WriteLine($"Found {updateIds.Count} versions, getting urls");
+            Console.WriteLine($"Found {updateIds.Count} versions, getting urls...");
 
+            // Create the revisionId list (all 1 since MC only uses that) and then fetch the urls
             revisionIds.AddRange(Enumerable.Repeat("1", updateIds.Count));
             IList<Uri> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{token}</User>");
 
@@ -77,22 +92,27 @@ namespace MinecraftW10Downloader
             wc.DownloadProgressChanged += Wc_DownloadProgressChanged;
             foreach (Uri uri in Files)
             {
+                // Check if there is a download link for the file
                 if (uri.Host == "test.com")
                 {
                     i++;
                     continue;
                 }
 
+                // Download the file
                 Console.WriteLine($"Downloading {names[i]} ({updateIds[i]})");
                 string outPath = Path.Join(downloadDir, names[i] + ".Appx");
-                if (File.Exists(outPath))
-                {
-                    Console.WriteLine("File already downloaded!");
-                }
-                else
+                try
                 {
                     await wc.DownloadFileTaskAsync(uri, outPath);
                     Console.WriteLine();
+                }
+                catch (WebException ex)
+                {
+                    // The download threw an exception so let the user know and cleanup
+                    Console.WriteLine();
+                    Console.WriteLine($"Failed to download: {ex.Message}");
+                    File.Delete(outPath);
                 }
 
                 i++;
@@ -117,7 +137,10 @@ namespace MinecraftW10Downloader
         /// <returns></returns>
         private static async Task GetLatestVersions(DisplayCatalogHandler dcathandler, string token)
         {
+            // Create a packages var for debugging
             IList<PackageInstance> packages;
+
+            // Make sure we have a token, if not don't bother checking for betas
             if (token == "")
             {
                 Console.WriteLine("Failed to get token! Unable to fetch beta.");
@@ -127,7 +150,8 @@ namespace MinecraftW10Downloader
                 Console.WriteLine();
                 Console.WriteLine("Fetching Beta... (if this returns release versions then you need to opt into the beta)");
 
-                await dcathandler.QueryDCATAsync("9nblggh2jhxj", IdentiferType.ProductID, "Bearer WLID1.0=" + Convert.FromBase64String(token));
+                // Grab the packages for the beta using auth
+                await dcathandler.QueryDCATAsync("9NBLGGH2JHXJ", IdentiferType.ProductID, "Bearer WLID1.0=" + Convert.FromBase64String(token));
                 packages = await dcathandler.GetPackagesForProductAsync($"<User>{token}</User>");
                 foreach (PackageInstance package in packages)
                 {
@@ -141,7 +165,8 @@ namespace MinecraftW10Downloader
             Console.WriteLine();
             Console.WriteLine("Fetching Release...");
 
-            await dcathandler.QueryDCATAsync("9nblggh2jhxj");
+            // Grab the packages for the release
+            await dcathandler.QueryDCATAsync("9NBLGGH2JHXJ");
             packages = await dcathandler.GetPackagesForProductAsync();
             foreach (PackageInstance package in packages)
             {
