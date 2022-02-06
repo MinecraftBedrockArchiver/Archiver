@@ -42,6 +42,8 @@ namespace MinecraftW10Downloader
 
             string downloadDir = @"\\192.168.1.5\Archive\Minecraft\Windows10 - Microsoft.MinecraftUWP_8wekyb3d8bbwe\";
 
+            Console.WriteLine("Fetching versionsdb");
+
             HttpResponseMessage response = await client.GetAsync("https://raw.githubusercontent.com/MCMrARM/mc-w10-versiondb/master/versions.txt");
 
             string body = await response.Content.ReadAsStringAsync();
@@ -63,8 +65,12 @@ namespace MinecraftW10Downloader
                 names.Add(name);
             }
 
+            Console.WriteLine($"Found {updateIds.Count} versions, getting urls");
+
             revisionIds.AddRange(Enumerable.Repeat("1", updateIds.Count));
             IList<Uri> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{token}</User>");
+
+            Console.WriteLine("Downloading versions");
 
             int i = 0;
             WebClient wc = new WebClient();
