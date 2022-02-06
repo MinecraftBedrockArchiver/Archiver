@@ -104,17 +104,26 @@ namespace MinecraftW10Downloader
                 // Download the file
                 Console.WriteLine($"Downloading {names[i]} ({updateIds[i]})");
                 string outPath = Path.Join(downloadDir, names[i] + ".Appx");
-                try
+
+                // Check the file doesn't exist as the versiondb contains multiple copies of the same version
+                if (File.Exists(outPath))
                 {
-                    await wc.DownloadFileTaskAsync(uri, outPath);
-                    Console.WriteLine();
+                    Console.WriteLine("Already downloaded!");
                 }
-                catch (WebException ex)
+                else
                 {
-                    // The download threw an exception so let the user know and cleanup
-                    Console.WriteLine();
-                    Console.WriteLine($"Failed to download: {ex.Message}");
-                    File.Delete(outPath);
+                    try
+                    {
+                        await wc.DownloadFileTaskAsync(uri, outPath);
+                        Console.WriteLine();
+                    }
+                    catch (WebException ex)
+                    {
+                        // The download threw an exception so let the user know and cleanup
+                        Console.WriteLine();
+                        Console.WriteLine($"Failed to download: {ex.Message}");
+                        File.Delete(outPath);
+                    }
                 }
 
                 i++;

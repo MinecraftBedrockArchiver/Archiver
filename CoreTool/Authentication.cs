@@ -25,6 +25,11 @@ namespace MinecraftW10Downloader
         const uint STD_OUTPUT_HANDLE = unchecked((uint)-11);
         const uint STD_ERROR_HANDLE = unchecked((uint)-12);
 
+        /// <summary>
+        /// Fetch the WU token from either a token.txt or using the WUTokenHelper.dll
+        /// </summary>
+        /// <returns>A WU token</returns>
+        /// <exception cref="Win32Exception"></exception>
         public static string GetWUToken()
         {
             // Get the local token file
