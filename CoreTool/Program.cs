@@ -19,7 +19,9 @@ namespace MinecraftW10Downloader
 
             Console.WriteLine("Getting token...");
 
-            string token = await Authentication.GetWUToken();
+            string token = Authentication.GetWUToken();
+
+            Console.WriteLine($"Got token: {token}");
 
             await DownloadKnownVersions(token);
 
