@@ -56,7 +56,7 @@ namespace CoreTool
         /// <param name="e"></param>
         public static void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            Console.Write("\r{0}%", e.ProgressPercentage);
+            Log.WriteRaw("\r{0}%", e.ProgressPercentage);
         }
     }
 }

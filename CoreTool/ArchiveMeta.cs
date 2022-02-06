@@ -44,7 +44,7 @@ namespace CoreTool
             IList<PackageInstance> packages;
             string releaseVer = "";
             
-            Console.WriteLine("Loading release...");
+            Log.Write("Loading release...");
 
             // Grab the packages for the release
             await dcathandler.QueryDCATAsync("9NBLGGH2JHXJ");
@@ -57,7 +57,7 @@ namespace CoreTool
                 // Create the meta and store it
                 MetaItem item = new MetaItem(Utils.GetVersionFromName(package.PackageMoniker));
                 item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new MetaItemArch(package.PackageMoniker, new List<Guid>() { Guid.Parse(package.UpdateId) });
-                if (AddOrUpdate(item, true)) Console.WriteLine($"New version registered: {Utils.GetVersionFromName(package.PackageMoniker)}");
+                if (AddOrUpdate(item, true)) Log.Write($"New version registered: {Utils.GetVersionFromName(package.PackageMoniker)}");
 
                 releaseVer = Utils.GetVersionFromName(package.PackageMoniker);
             }
@@ -65,11 +65,11 @@ namespace CoreTool
             // Make sure we have a token, if not don't bother checking for betas
             if (token == "")
             {
-                Console.WriteLine("Failed to get token! Unable to fetch beta.");
+                Log.WriteError("Failed to get token! Unable to fetch beta.");
             }
             else
             {
-                Console.WriteLine("Loading beta...");
+                Log.Write("Loading beta...");
 
                 // Grab the packages for the beta using auth
                 await dcathandler.QueryDCATAsync("9NBLGGH2JHXJ", IdentiferType.ProductID, "Bearer WLID1.0=" + Convert.FromBase64String(token));
@@ -82,14 +82,14 @@ namespace CoreTool
                     // Check we haven't got a release version in the beta request
                     if (Utils.GetVersionFromName(package.PackageMoniker) == releaseVer)
                     {
-                        Console.WriteLine($"You need to opt into the beta! Release version found in beta request. See https://aka.ms/JoinMCBeta");
+                        Log.WriteError($"You need to opt into the beta! Release version found in beta request. See https://aka.ms/JoinMCBeta");
                         break;
                     }
 
                     // Create the meta and store it
                     MetaItem item = new MetaItem(Utils.GetVersionFromName(package.PackageMoniker));
                     item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new MetaItemArch(package.PackageMoniker, new List<Guid>() { Guid.Parse(package.UpdateId) });
-                    if (AddOrUpdate(item, true)) Console.WriteLine($"New version registered: {Utils.GetVersionFromName(package.PackageMoniker)}");
+                    if (AddOrUpdate(item, true)) Log.Write($"New version registered: {Utils.GetVersionFromName(package.PackageMoniker)}");
                 }
             }
 
@@ -100,7 +100,7 @@ namespace CoreTool
 
         internal void LoadFiles()
         {
-            Console.WriteLine("Loading files...");
+            Log.Write("Loading files...");
 
             string[] files = Directory.GetFiles(archiveDir);
             foreach (string file in files)
@@ -113,7 +113,7 @@ namespace CoreTool
                 // Construct the new item and add it to the meta
                 MetaItem item = new MetaItem(Utils.GetVersionFromName(fileName));
                 item.AddFile(fileName);
-                if (AddOrUpdate(item, true)) Console.WriteLine($"New version registered: {Utils.GetVersionFromName(fileName)}");
+                if (AddOrUpdate(item, true)) Log.Write($"New version registered: {Utils.GetVersionFromName(fileName)}");
             }
 
             Save();
@@ -121,7 +121,7 @@ namespace CoreTool
 
         internal async Task LoadVersionDB()
         {
-            Console.WriteLine("Loading versiondb...");
+            Log.Write("Loading versiondb...");
 
             HttpClient client = new HttpClient();
 
@@ -149,7 +149,7 @@ namespace CoreTool
                 // Create the meta and store it
                 MetaItem item = new MetaItem(Utils.GetVersionFromName(name));
                 item.Archs[Utils.GetArchFromName(name)] = new MetaItemArch(name, new List<Guid>() { Guid.Parse(updateId) });
-                if (AddOrUpdate(item, true)) Console.WriteLine($"New version registered: {Utils.GetVersionFromName(name)}");
+                if (AddOrUpdate(item, true)) Log.Write($"New version registered: {Utils.GetVersionFromName(name)}");
             }
 
             Save();
@@ -159,20 +159,20 @@ namespace CoreTool
         #region Checks
         internal void CheckMeta()
         {
-            Console.WriteLine("Checking for missing meta...");
+            Log.Write("Checking for missing meta...");
             // TODO: Add more checks. Is there anything else we need to check?
             foreach (MetaItem item in metaItems.Values)
             {
                 foreach (string arch in item.Archs.Keys)
                 {
-                    if (item.Archs[arch].UpdateIds.Count == 0) Console.WriteLine($"Warning: {item.Version} {arch} missing update ids");
+                    if (item.Archs[arch].UpdateIds.Count == 0) Log.WriteWarn($"{item.Version} {arch} missing update ids");
                 }
             }
         }
 
         internal async Task CheckFiles(string token)
         {
-            Console.WriteLine("Checking for missing files...");
+            Log.Write("Checking for missing files...");
             WebClient wc = new WebClient();
             wc.DownloadProgressChanged += Utils.DownloadProgressChanged;
 
@@ -183,7 +183,7 @@ namespace CoreTool
                     string outPath = Path.Join(archiveDir, arch.FileName);
                     if (!File.Exists(outPath))
                     {
-                        Console.WriteLine($"Downloading {arch.FileName}");
+                        Log.Write($"Downloading {arch.FileName}");
 
                         List<string> updateIds = arch.UpdateIds.Select(guid => guid.ToString()).ToList();
                         List<string> revisionIds = new List<string>();
@@ -200,21 +200,21 @@ namespace CoreTool
                             try
                             {
                                 await wc.DownloadFileTaskAsync(uri, outPath);
-                                Console.WriteLine();
+                                Log.Write();
                                 success = true;
                             }
                             catch (WebException ex)
                             {
                                 // The download threw an exception so let the user know and cleanup
-                                Console.WriteLine();
-                                Console.WriteLine($"Failed to download: {ex.Message}");
+                                Log.Write();
+                                Log.WriteError($"Failed to download: {ex.Message}");
                                 File.Delete(outPath);
                             }
 
                             if (success) break;
                         }
 
-                        if (!success) Console.WriteLine($"Failed to download from any urls");
+                        if (!success) Log.WriteError($"Failed to download from any urls");
                     }
                 }
             }

@@ -53,7 +53,7 @@ namespace CoreTool
                     token = "";
                 }
 
-                // Restore original console buffers before calling Console.WriteLine
+                // Restore original console buffers
                 if (!SetStdHandle(STD_OUTPUT_HANDLE, hStdOut) || !SetStdHandle(STD_ERROR_HANDLE, hStdErr))
                 {
                     throw new Win32Exception(Marshal.GetLastWin32Error());
