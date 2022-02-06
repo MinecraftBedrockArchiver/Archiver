@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace MinecraftW10Downloader
+namespace CoreTool
 {
     class Authentication
     {
