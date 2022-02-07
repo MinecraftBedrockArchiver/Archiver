@@ -13,6 +13,10 @@ namespace CoreTool
         {
             Console.WriteLine(GetPrefix() + message);
         }
+        public static void Write(object message)
+        {
+            Console.WriteLine(GetPrefix() + message.ToString());
+        }
 
         public static void WriteRaw(string message, params object[] arg)
         {
@@ -22,14 +26,14 @@ namespace CoreTool
         public static void WriteError(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(GetPrefix("ERROR") + "Error: " + message);
+            Console.WriteLine(GetPrefix("ERROR") + message);
             Console.ResetColor();
         }
 
         public static void WriteWarn(string message)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(GetPrefix("WARN") + "Warning: " + message);
+            Console.WriteLine(GetPrefix("WARN") + message);
             Console.ResetColor();
         }
 
