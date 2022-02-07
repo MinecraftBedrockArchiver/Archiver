@@ -200,13 +200,13 @@ namespace CoreTool
                             try
                             {
                                 await wc.DownloadFileTaskAsync(uri, outPath);
-                                Log.Write();
+                                Console.WriteLine();
                                 success = true;
                             }
                             catch (WebException ex)
                             {
                                 // The download threw an exception so let the user know and cleanup
-                                Log.Write();
+                                Console.WriteLine();
                                 Log.WriteError($"Failed to download: {ex.Message}");
                                 File.Delete(outPath);
                             }

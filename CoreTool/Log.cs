@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoreTool
 {
@@ -20,7 +15,14 @@ namespace CoreTool
 
         public static void WriteRaw(string message, params object[] arg)
         {
-            Console.Write(GetPrefix() + message, arg);
+            string reset = "";
+            if (message.StartsWith('\r'))
+            {
+                message = message.TrimStart('\r');
+                reset = "\r";
+            }
+
+            Console.Write(reset + GetPrefix() + message, arg);
         }
 
         public static void WriteError(string message)
