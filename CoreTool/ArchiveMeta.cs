@@ -56,7 +56,7 @@ namespace CoreTool
 
                 // Create the meta and store it
                 MetaItem item = new MetaItem(Utils.GetVersionFromName(package.PackageMoniker));
-                item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new MetaItemArch(package.PackageMoniker, new List<Guid>() { Guid.Parse(package.UpdateId) });
+                item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new MetaItemArch(package.PackageMoniker + ".Appx", new List<Guid>() { Guid.Parse(package.UpdateId) });
                 if (AddOrUpdate(item, true)) Log.Write($"New version registered: {Utils.GetVersionFromName(package.PackageMoniker)}");
 
                 releaseVer = Utils.GetVersionFromName(package.PackageMoniker);
@@ -88,12 +88,10 @@ namespace CoreTool
 
                     // Create the meta and store it
                     MetaItem item = new MetaItem(Utils.GetVersionFromName(package.PackageMoniker));
-                    item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new MetaItemArch(package.PackageMoniker, new List<Guid>() { Guid.Parse(package.UpdateId) });
+                    item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new MetaItemArch(package.PackageMoniker + ".Appx", new List<Guid>() { Guid.Parse(package.UpdateId) });
                     if (AddOrUpdate(item, true)) Log.Write($"New version registered: {Utils.GetVersionFromName(package.PackageMoniker)}");
                 }
             }
-
-            
 
             Save();
         }
