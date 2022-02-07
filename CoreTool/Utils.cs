@@ -1,9 +1,12 @@
-﻿using System.Net;
+﻿using System.Threading.Tasks;
 
 namespace CoreTool
 {
     internal class Utils
     {
+        public static readonly Task CompletedTask = Task.FromResult(false);
+
+        public static readonly Log GenericLogger = new Log();
 
         public static string GetVersionFromName(string name)
         {
@@ -46,16 +49,6 @@ namespace CoreTool
         public static string GetArchFromName(string name)
         {
             return name.Split("_")[2];
-        }
-
-        /// <summary>
-        /// Update the current line with the download progress
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public static void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            Log.WriteRaw("\r{0}%", e.ProgressPercentage);
         }
     }
 }

@@ -40,6 +40,7 @@ namespace CoreTool
 
             // Redirect console output to nothing so we hide the dll output
             // From: https://social.msdn.microsoft.com/Forums/en-US/c89e2f26-9fb2-46f3-a138-591cb91c5105/#5a6fc798-4ed4-464d-b6bd-81c22fb9771f-isAnswer
+            // TODO: Find out why this breaks in release builds of the dll
             IntPtr hBuffer = CreateConsoleScreenBuffer(accessMode, 0, IntPtr.Zero, 1, IntPtr.Zero);
             IntPtr hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
             IntPtr hStdErr = GetStdHandle(STD_ERROR_HANDLE);
