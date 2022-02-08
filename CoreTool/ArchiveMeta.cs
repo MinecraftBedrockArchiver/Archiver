@@ -99,7 +99,7 @@ namespace CoreTool
 
         internal ReadOnlyCollection<MetaItem> GetItems() => new ReadOnlyCollection<MetaItem>(metaItems.Values.ToList());
 
-        internal string GetToken() => Authentication.GetWUToken();
+        internal string GetToken(string scope = "service::dcat.update.microsoft.com::MBI_SSL") => Authentication.GetWUToken(scope);
 
         internal string GetPrefix() => $"[{name}] ";
         #endregion

@@ -10,17 +10,13 @@ namespace CoreTool
     class Program
     {
         private static Timer updateTimer;
-        private static ArchiveMeta archiveMetaW10;
-        private static ArchiveMeta archiveMetaXbox;
+        private static List<ArchiveMeta> archiveMetas = new List<ArchiveMeta>();
 
         static async Task Main(string[] args)
         {
-            // Set the archive dir
-            // TODO: Make this configurable
-            string archiveDirW10 = @"\\192.168.1.5\Archive\Minecraft\Windows10 - Microsoft.MinecraftUWP_8wekyb3d8bbwe\";
-            string archiveDirXbox = @"\\192.168.1.5\Archive\Minecraft\Xbox - Microsoft.MinecraftUWPConsole_8wekyb3d8bbwe\";
+            // TODO: Make these configurable
 
-            archiveMetaW10 = new ArchiveMeta("W10", archiveDirW10, new List<ILoader>()
+            archiveMetas.Add(new ArchiveMeta("W10", @"\\192.168.1.5\Archive\Minecraft\Windows10 - Microsoft.MinecraftUWP_8wekyb3d8bbwe\", new List<ILoader>()
             {
                 new FileLoader(),
                 new VersionDBLoader(),
@@ -29,9 +25,9 @@ namespace CoreTool
             {
                 new MetaChecker(),
                 new FileChecker(),
-            });
+            }));
 
-            archiveMetaXbox = new ArchiveMeta("Xbox", archiveDirXbox, new List<ILoader>()
+            archiveMetas.Add(new ArchiveMeta("Xbox", @"\\192.168.1.5\Archive\Minecraft\Xbox - Microsoft.MinecraftUWPConsole_8wekyb3d8bbwe\", new List<ILoader>()
             {
                 new FileLoader(),
                 new StoreLoader("9NBLGGH537BL", "Microsoft.MinecraftUWPConsole")
@@ -39,15 +35,29 @@ namespace CoreTool
             {
                 new MetaChecker(),
                 new FileChecker(),
-            });
+            }));
+
+            archiveMetas.Add(new ArchiveMeta("Preview", @"\\192.168.1.5\Archive\Minecraft\Microsoft.MinecraftUWPBeta_8wekyb3d8bbwe\", new List<ILoader>()
+            {
+                new FileLoader(),
+                new StoreLoader("9MTK992XRFL2", "Microsoft.MinecraftUWPBeta", true, "service::www.microsoft.com::mbi_ssl")
+            }, new List<IChecker>()
+            {
+                new MetaChecker(),
+                new FileChecker(),
+            }));
 
             // Load data
-            await archiveMetaW10.Load();
-            await archiveMetaXbox.Load();
+            foreach (ArchiveMeta meta in archiveMetas)
+            {
+                await meta.Load();
+            }
 
             // Do checks and download missing files
-            await archiveMetaW10.Check();
-            await archiveMetaXbox.Check();
+            foreach (ArchiveMeta meta in archiveMetas)
+            {
+                await meta.Check();
+            }
 
             Utils.GenericLogger.Write("Done startup!");
             Utils.GenericLogger.Write("Starting update checker");
@@ -69,13 +79,11 @@ namespace CoreTool
             // Grab a new token incase the other expired
             string token = Authentication.GetWUToken();
 
-            // Windows 10
-            await archiveMetaW10.Load();
-            await archiveMetaW10.Check();
-
-            // Xbox
-            await archiveMetaXbox.Load();
-            await archiveMetaXbox.Check();
+            foreach (ArchiveMeta meta in archiveMetas)
+            {
+                await meta.Load();
+                await meta.Check();
+            }
         }
     }
 }

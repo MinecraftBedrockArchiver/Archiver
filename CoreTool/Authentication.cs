@@ -8,7 +8,7 @@ namespace CoreTool
     class Authentication
     {
         [DllImport("WUTokenHelper.dll", CallingConvention = CallingConvention.StdCall)]
-        private static extern int GetWUToken([MarshalAs(UnmanagedType.LPWStr)] out string token);
+        private static extern int GetWUToken(string scope, [MarshalAs(UnmanagedType.LPWStr)] out string token);
 
         [DllImport("kernel32.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Auto, SetLastError = true)]
         static public extern IntPtr GetStdHandle(uint nStdHandle);
@@ -28,7 +28,7 @@ namespace CoreTool
         /// </summary>
         /// <returns>A WU token</returns>
         /// <exception cref="Win32Exception"></exception>
-        public static string GetWUToken()
+        public static string GetWUToken(string scope = "service::dcat.update.microsoft.com::MBI_SSL")
         {
             // Get the local token file
             if (File.Exists("token.txt"))
@@ -47,7 +47,7 @@ namespace CoreTool
             if (SetStdHandle(STD_OUTPUT_HANDLE, hBuffer) && SetStdHandle(STD_ERROR_HANDLE, hBuffer))
             {
                 // Get the token using the token helper
-                if (GetWUToken(out token) != 0)
+                if (GetWUToken(scope, out token) != 0)
                 {
                     token = "";
                 }
