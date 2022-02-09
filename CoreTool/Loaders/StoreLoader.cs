@@ -1,4 +1,5 @@
-﻿using StoreLib.Models;
+﻿using CoreTool.Archive;
+using StoreLib.Models;
 using StoreLib.Services;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,15 @@ namespace CoreTool.Loaders
     {
         private string packageId;
         private string packageName;
+        private bool hasBeta;
         private bool authBetaQuery;
         private string scope;
 
-        public StoreLoader(string packageId, string packageName, bool authBetaQuery = false, string scope = "service::dcat.update.microsoft.com::MBI_SSL")
+        public StoreLoader(string packageId, string packageName, bool hasBeta = true, bool authBetaQuery = false, string scope = "service::dcat.update.microsoft.com::MBI_SSL")
         {
             this.packageId = packageId;
             this.packageName = packageName;
+            this.hasBeta = hasBeta;
             this.authBetaQuery = authBetaQuery;
             this.scope = scope;
         }
@@ -44,13 +47,15 @@ namespace CoreTool.Loaders
                     if (package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 0) continue;
 
                     // Create the meta and store it
-                    MetaItem item = new MetaItem(Utils.GetVersionFromName(package.PackageMoniker));
-                    item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new MetaItemArch(package.PackageMoniker + ".Appx", new List<Guid>() { Guid.Parse(package.UpdateId) });
+                    Item item = new Item(Utils.GetVersionFromName(package.PackageMoniker));
+                    item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new Arch(package.PackageMoniker + ".Appx", new List<Guid>() { Guid.Parse(package.UpdateId) });
                     if (archive.AddOrUpdate(item, true)) archive.Logger.Write($"New version registered: {Utils.GetVersionFromName(package.PackageMoniker)}");
 
                     releaseVer = Utils.GetVersionFromName(package.PackageMoniker);
                 }
             }
+
+            if (!hasBeta) return;
 
             // Make sure we have a token, if not don't bother checking for betas
             string token = archive.GetToken(scope);
@@ -85,8 +90,8 @@ namespace CoreTool.Loaders
                         }
 
                         // Create the meta and store it
-                        MetaItem item = new MetaItem(Utils.GetVersionFromName(package.PackageMoniker));
-                        item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new MetaItemArch(package.PackageMoniker + ".Appx", new List<Guid>() { Guid.Parse(package.UpdateId) });
+                        Item item = new Item(Utils.GetVersionFromName(package.PackageMoniker));
+                        item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new Arch(package.PackageMoniker + ".Appx", new List<Guid>() { Guid.Parse(package.UpdateId) });
                         if (archive.AddOrUpdate(item, true)) archive.Logger.Write($"New version registered: {Utils.GetVersionFromName(package.PackageMoniker)}");
                     }
                 }

@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CoreTool
+namespace CoreTool.Archive
 {
-    internal class MetaItemArch
+    internal class Arch
     {
-        public MetaItemArch() { }
+        public Arch() { }
 
-        public MetaItemArch(string fileName)
+        public Arch(string fileName)
         {
             FileName = fileName;
             UpdateIds = new List<Guid>();
         }
 
-        public MetaItemArch(string fileName, List<Guid> updateIds)
+        public Arch(string fileName, List<Guid> updateIds)
         {
             FileName = fileName;
             UpdateIds = updateIds;
@@ -25,9 +23,9 @@ namespace CoreTool
         public string FileName { get; set; }
         public List<Guid> UpdateIds { get; set; }
 
-        internal MetaItemArch Merge(MetaItemArch metaItemArch)
+        internal Arch Merge(Arch metaItemArch)
         {
-            MetaItemArch newItem = new MetaItemArch(this.FileName == "" ? metaItemArch.FileName : this.FileName, this.UpdateIds);
+            Arch newItem = new Arch(this.FileName == "" ? metaItemArch.FileName : this.FileName, this.UpdateIds);
 
             newItem.UpdateIds.AddRange(metaItemArch.UpdateIds);
             newItem.UpdateIds = newItem.UpdateIds.Distinct().ToList();

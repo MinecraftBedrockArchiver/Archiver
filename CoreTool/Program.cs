@@ -1,62 +1,31 @@
-﻿using CoreTool.Checkers;
-using CoreTool.Loaders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
+using CoreTool.Archive;
 
 namespace CoreTool
 {
     class Program
     {
         private static Timer updateTimer;
-        private static List<ArchiveMeta> archiveMetas = new List<ArchiveMeta>();
+        private static List<ArchiveMeta> archives;
 
         static async Task Main(string[] args)
         {
-            // TODO: Make these configurable
-
-            archiveMetas.Add(new ArchiveMeta("W10", @"\\192.168.1.5\Archive\Minecraft\Windows10 - Microsoft.MinecraftUWP_8wekyb3d8bbwe\", new List<ILoader>()
-            {
-                new FileLoader(),
-                new VersionDBLoader(),
-                new StoreLoader("9NBLGGH2JHXJ", "Microsoft.MinecraftUWP")
-            }, new List<IChecker>()
-            {
-                new MetaChecker(),
-                new FileChecker(),
-            }));
-
-            archiveMetas.Add(new ArchiveMeta("Xbox", @"\\192.168.1.5\Archive\Minecraft\Xbox - Microsoft.MinecraftUWPConsole_8wekyb3d8bbwe\", new List<ILoader>()
-            {
-                new FileLoader(),
-                new StoreLoader("9NBLGGH537BL", "Microsoft.MinecraftUWPConsole")
-            }, new List<IChecker>()
-            {
-                new MetaChecker(),
-                new FileChecker(),
-            }));
-
-            archiveMetas.Add(new ArchiveMeta("Preview", @"\\192.168.1.5\Archive\Minecraft\Microsoft.MinecraftUWPBeta_8wekyb3d8bbwe\", new List<ILoader>()
-            {
-                new FileLoader(),
-                new StoreLoader("9MTK992XRFL2", "Microsoft.MinecraftUWPBeta", true, "service::www.microsoft.com::mbi_ssl")
-            }, new List<IChecker>()
-            {
-                new MetaChecker(),
-                new FileChecker(),
-            }));
+            // Load the archives from the config.json
+            archives = Config.Loader.Load();
 
             // Load data
-            foreach (ArchiveMeta meta in archiveMetas)
+            foreach (ArchiveMeta archive in archives)
             {
-                await meta.Load();
+                await archive.Load();
             }
 
             // Do checks and download missing files
-            foreach (ArchiveMeta meta in archiveMetas)
+            foreach (ArchiveMeta archive in archives)
             {
-                await meta.Check();
+                await archive.Check();
             }
 
             Utils.GenericLogger.Write("Done startup!");
@@ -79,10 +48,10 @@ namespace CoreTool
             // Grab a new token incase the other expired
             string token = Authentication.GetWUToken();
 
-            foreach (ArchiveMeta meta in archiveMetas)
+            foreach (ArchiveMeta archive in archives)
             {
-                await meta.Load();
-                await meta.Check();
+                await archive.Load();
+                await archive.Check();
             }
         }
     }

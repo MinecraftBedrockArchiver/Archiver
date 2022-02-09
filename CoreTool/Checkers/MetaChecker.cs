@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using CoreTool.Archive;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoreTool.Checkers
@@ -9,7 +10,7 @@ namespace CoreTool.Checkers
         {
             archive.Logger.Write("Checking for missing meta...");
             // TODO: Add more checks. Is there anything else we need to check?
-            foreach (MetaItem item in archive.GetItems())
+            foreach (Item item in archive.GetItems())
             {
                 // Check if the version stored is wrong based on the filename
                 // This shouldn't ever happen

@@ -1,42 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CoreTool
+namespace CoreTool.Archive
 {
-    internal class MetaItem
+    internal class Item
     {
-        public MetaItem() { }
+        public Item() { }
 
-        public MetaItem(string version)
+        public Item(string version)
         {
             Version = version;
-            Archs = new Dictionary<string, MetaItemArch>();
+            Archs = new Dictionary<string, Arch>();
         }
 
-        public MetaItem(string version, Dictionary<string, MetaItemArch> archs)
+        public Item(string version, Dictionary<string, Arch> archs)
         {
             Version = version;
             Archs = archs;
         }
 
         public string Version { get; set; }
-        public Dictionary<string, MetaItemArch> Archs { get; set; }
+        public Dictionary<string, Arch> Archs { get; set; }
 
         internal void AddFile(string fileName)
         {
             string arch = Utils.GetArchFromName(fileName);
             if (!Archs.ContainsKey(arch))
             {
-                Archs.Add(arch, new MetaItemArch(fileName));
+                Archs.Add(arch, new Arch(fileName));
             }
         }
 
-        internal MetaItem Merge(MetaItem metaItem)
+        internal Item Merge(Item metaItem)
         {
-            MetaItem newItem = new MetaItem(this.Version);
+            Item newItem = new Item(this.Version);
 
             foreach(string arch in this.Archs.Keys.Concat(metaItem.Archs.Keys).Distinct())
             {

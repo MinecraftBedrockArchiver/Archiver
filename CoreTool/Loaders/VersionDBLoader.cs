@@ -1,8 +1,7 @@
-﻿using System;
+﻿using CoreTool.Archive;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CoreTool.Loaders
@@ -37,8 +36,8 @@ namespace CoreTool.Loaders
                 name = name.Replace(".Appx", "") + ".Appx";
 
                 // Create the meta and store it
-                MetaItem item = new MetaItem(Utils.GetVersionFromName(name));
-                item.Archs[Utils.GetArchFromName(name)] = new MetaItemArch(name, new List<Guid>() { Guid.Parse(updateId) });
+                Item item = new Item(Utils.GetVersionFromName(name));
+                item.Archs[Utils.GetArchFromName(name)] = new Arch(name, new List<Guid>() { Guid.Parse(updateId) });
                 if (archive.AddOrUpdate(item, true)) archive.Logger.Write($"New version registered: {Utils.GetVersionFromName(name)}");
             }
         }

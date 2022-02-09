@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using CoreTool.Archive;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace CoreTool.Loaders
@@ -18,7 +19,7 @@ namespace CoreTool.Loaders
                 string fileName = Path.GetFileName(file);
 
                 // Construct the new item and add it to the meta
-                MetaItem item = new MetaItem(Utils.GetVersionFromName(fileName));
+                Item item = new Item(Utils.GetVersionFromName(fileName));
                 item.AddFile(fileName);
                 if (archive.AddOrUpdate(item, true)) archive.Logger.Write($"New version registered: {Utils.GetVersionFromName(fileName)}");
             }

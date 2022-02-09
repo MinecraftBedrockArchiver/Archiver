@@ -1,4 +1,5 @@
-﻿using StoreLib.Services;
+﻿using CoreTool.Archive;
+using StoreLib.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,9 +20,9 @@ namespace CoreTool.Checkers
 
             string token = archive.GetToken();
 
-            foreach (MetaItem item in archive.GetItems())
+            foreach (Item item in archive.GetItems())
             {
-                foreach (MetaItemArch arch in item.Archs.Values)
+                foreach (Arch arch in item.Archs.Values)
                 {
                     string outPath = Path.Join(archive.ArchiveDir, arch.FileName);
                     if (!File.Exists(outPath))

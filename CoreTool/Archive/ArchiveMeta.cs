@@ -8,7 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace CoreTool
+namespace CoreTool.Archive
 {
     internal class ArchiveMeta
     {
@@ -18,7 +18,7 @@ namespace CoreTool
         private string name;
         private string archiveMetaFile;
 
-        private Dictionary<string, MetaItem> metaItems;
+        private Dictionary<string, Item> metaItems;
 
         private List<ILoader> loaders;
         private List<IChecker> checkers;
@@ -48,11 +48,11 @@ namespace CoreTool
             // Load the meta or create a new one
             if (File.Exists(archiveMetaFile))
             {
-                metaItems = JsonConvert.DeserializeObject<Dictionary<string, MetaItem>>(File.ReadAllText(archiveMetaFile));
+                metaItems = JsonConvert.DeserializeObject<Dictionary<string, Item>>(File.ReadAllText(archiveMetaFile));
             }
             else
             {
-                metaItems = new Dictionary<string, MetaItem>();
+                metaItems = new Dictionary<string, Item>();
                 Save();
             }
         }
@@ -79,7 +79,7 @@ namespace CoreTool
         }
 
         #region Accessors
-        internal bool AddOrUpdate(MetaItem item, bool skipSave = false)
+        internal bool AddOrUpdate(Item item, bool skipSave = false)
         {
             bool added = metaItems.TryAdd(item.Version, item);
             if (!added)
@@ -95,9 +95,9 @@ namespace CoreTool
             return added;
         }
 
-        internal MetaItem Get(string version) => metaItems[version];
+        internal Item Get(string version) => metaItems[version];
 
-        internal ReadOnlyCollection<MetaItem> GetItems() => new ReadOnlyCollection<MetaItem>(metaItems.Values.ToList());
+        internal ReadOnlyCollection<Item> GetItems() => new ReadOnlyCollection<Item>(metaItems.Values.ToList());
 
         internal string GetToken(string scope = "service::dcat.update.microsoft.com::MBI_SSL") => Authentication.GetWUToken(scope);
 
