@@ -8,6 +8,13 @@ namespace CoreTool.Loaders
 {
     internal class VersionDBLoader : ILoader
     {
+        private string packageName;
+
+        public VersionDBLoader(string packageName)
+        {
+            this.packageName = packageName;
+        }
+
         public async Task Load(ArchiveMeta archive)
         {
             archive.Logger.Write("Loading versiondb...");
@@ -32,6 +39,9 @@ namespace CoreTool.Loaders
                 // Ignore EAppx and .70 releases as they are encrypted
                 // TODO? Add functionality for this
                 if (name.Contains("EAppx") || name.Contains(".70_")) continue;
+
+                // Make sure the entry is for this package
+                if (!name.StartsWith(packageName + "_")) continue;
 
                 name = name.Replace(".Appx", "") + ".Appx";
 
