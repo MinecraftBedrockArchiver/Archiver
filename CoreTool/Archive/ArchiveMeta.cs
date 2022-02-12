@@ -1,6 +1,7 @@
 ﻿using CoreTool.Checkers;
 using CoreTool.Loaders;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -14,9 +15,8 @@ namespace CoreTool.Archive
     {
         public string ArchiveDir { get; private set; }
         public Log Logger { get; internal set; }
-
-        private string name;
-        private string archiveMetaFile;
+        public string Name { get; internal set; }
+        public string ArchiveMetaFile { get; internal set; }
 
         private Dictionary<string, Item> metaItems;
 
@@ -29,26 +29,34 @@ namespace CoreTool.Archive
 
         public ArchiveMeta(string name, string archiveDir, List<ILoader> loaders, List<IChecker> checkers)
         {
-            this.name = name;
+            this.Name = name;
             this.Logger = new Log(name);
 
             // Create the directory if it doesn't exist
             if (!Directory.Exists(archiveDir))
             {
-                Logger.WriteWarn("Created new archive dir: " + archiveDir);
-                Directory.CreateDirectory(archiveDir);
+                try
+                {
+                    Directory.CreateDirectory(archiveDir);
+                    Logger.WriteWarn("Created new archive dir: " + archiveDir);
+                }
+                catch (IOException ex)
+                {
+                    Logger.WriteError("Unable to create archive directory: " + ex.Message);
+                    Environment.Exit(1);
+                }
             }
 
             this.ArchiveDir = archiveDir;
-            this.archiveMetaFile = Path.Join(archiveDir, "archive_meta.json");
+            this.ArchiveMetaFile = Path.Join(archiveDir, "archive_meta.json");
 
             this.loaders = loaders;
             this.checkers = checkers;
 
             // Load the meta or create a new one
-            if (File.Exists(archiveMetaFile))
+            if (File.Exists(ArchiveMetaFile))
             {
-                metaItems = JsonConvert.DeserializeObject<Dictionary<string, Item>>(File.ReadAllText(archiveMetaFile));
+                metaItems = JsonConvert.DeserializeObject<Dictionary<string, Item>>(File.ReadAllText(ArchiveMetaFile));
             }
             else
             {
@@ -101,7 +109,7 @@ namespace CoreTool.Archive
 
         internal string GetToken(string scope = "service::dcat.update.microsoft.com::MBI_SSL") => Authentication.GetWUToken(scope);
 
-        internal string GetPrefix() => $"[{name}] ";
+        internal string GetPrefix() => $"[{Name}] ";
         #endregion
         
         /// <summary>
@@ -117,7 +125,7 @@ namespace CoreTool.Archive
         #region Internal
         private void Save()
         {
-            using (StreamWriter file = File.CreateText(archiveMetaFile))
+            using (StreamWriter file = File.CreateText(ArchiveMetaFile))
             {
                 JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings() { Formatting = Formatting.Indented });
                 serializer.Serialize(file, metaItems);

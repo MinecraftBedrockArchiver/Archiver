@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
 using CoreTool.Archive;
@@ -9,26 +8,36 @@ namespace CoreTool
     class Program
     {
         private static Timer updateTimer;
-        private static List<ArchiveMeta> archives;
+        private static GitSync gitSync;
 
         static async Task Main(string[] args)
         {
-            // Load the archives from the config.json
-            archives = Config.Loader.Load();
+            if (Config.Loader.Config.GitSync.Enabled)
+            {
+                gitSync = new GitSync();
+                await gitSync.Load();
+            }
 
             // Load data
-            foreach (ArchiveMeta archive in archives)
+            foreach (ArchiveMeta archive in Config.Loader.Config.ArchiveInstances)
             {
                 await archive.Load();
             }
 
             // Do checks and download missing files
-            foreach (ArchiveMeta archive in archives)
+            foreach (ArchiveMeta archive in Config.Loader.Config.ArchiveInstances)
             {
                 await archive.Check();
             }
 
+            // Run GitSync if enabled
+            if (Config.Loader.Config.GitSync.Enabled)
+            {
+                await gitSync.Check();
+            }
+
             Utils.GenericLogger.Write("Done startup!");
+
             Utils.GenericLogger.Write("Starting update checker");
 
             // Check for updates every 5 mins
@@ -48,10 +57,16 @@ namespace CoreTool
             // Grab a new token incase the other expired
             string token = Authentication.GetWUToken();
 
-            foreach (ArchiveMeta archive in archives)
+            foreach (ArchiveMeta archive in Config.Loader.Config.ArchiveInstances)
             {
                 await archive.Load();
                 await archive.Check();
+            }
+
+            // Run GitSync if enabled
+            if (Config.Loader.Config.GitSync.Enabled)
+            {
+                await gitSync.Check();
             }
         }
     }

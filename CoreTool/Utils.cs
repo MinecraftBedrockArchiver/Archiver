@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace CoreTool
 {
@@ -49,6 +50,38 @@ namespace CoreTool
         public static string GetArchFromName(string name)
         {
             return name.Split("_")[2];
+        }
+
+        // https://stackoverflow.com/a/10789196/5299903
+        public static Task<(int ExitCode, string Output)> RunProcessAsync(string fileName, string arguments = "", string workingDir = "./")
+        {
+            var tcs = new TaskCompletionSource<(int ExitCode, string Output)>();
+            string output = "";
+
+            var process = new Process
+            {
+                StartInfo = {
+                    FileName = fileName,
+                    Arguments = arguments,
+                    WorkingDirectory = workingDir,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                },
+                EnableRaisingEvents = true
+            };
+
+            process.OutputDataReceived += (sender, args) => output += args.Data;
+
+            process.Exited += (sender, args) =>
+            {
+                tcs.SetResult((ExitCode: process.ExitCode, Output: output));
+                process.Dispose();
+            };
+
+            process.Start();
+            process.BeginOutputReadLine();
+
+            return tcs.Task;
         }
     }
 }

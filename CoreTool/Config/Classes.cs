@@ -1,8 +1,10 @@
 ﻿using CoreTool.Archive;
 using CoreTool.Checkers;
 using CoreTool.Loaders;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -33,4 +35,24 @@ namespace CoreTool.Config
             return new ArchiveMeta(Name, Directory, Loaders?.Select(x => x.Create()).ToList(), Checkers?.Select(x => x.Create()).ToList());
         }
     }
+
+    internal class GitSyncEntry
+    {
+        public bool Enabled { get; set; }
+        public string Repo { get; set; }
+        public string Folder { get; set; }
+    }
+
+    internal class ConfigData
+    {
+        public GitSyncEntry GitSync { get; set; }
+        public List<ArchiveEntry> Archives { get; set; }
+
+        [JsonIgnore]
+        private List<ArchiveMeta> _archiveInstances;
+
+        [JsonIgnore]
+        public ReadOnlyCollection<ArchiveMeta> ArchiveInstances => (_archiveInstances ??= Archives.Select(x => x.Create()).ToList()).AsReadOnly();
+    }
+
 }

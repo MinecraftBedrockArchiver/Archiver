@@ -1,0 +1,121 @@
+{
+  "GitSync": {
+    "Enabled": true,
+    "Repo": "https://github.com/rtm516/MinecraftAppxArchiverMeta",
+    "Folder": ".\\GitSync\\"
+  },
+  "Archives": [
+    {
+      "Name": "W10",
+      "Directory": "\\\\192.168.1.5\\Archive\\Minecraft\\Windows10 - Microsoft.MinecraftUWP_8wekyb3d8bbwe\\",
+      "Loaders": [
+        {
+          "Class": "CoreTool.Loaders.FileLoader"
+        },
+        {
+          "Class": "CoreTool.Loaders.VersionDBLoader",
+          "Params": [
+            "Microsoft.MinecraftUWP"
+          ]
+        },
+        {
+          "Class": "CoreTool.Loaders.StoreLoader",
+          "Params": [
+            "9NBLGGH2JHXJ",
+            "Microsoft.MinecraftUWP"
+          ]
+        }
+      ],
+      "Checkers": [
+        {
+          "Class": "CoreTool.Checkers.MetaChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.FileChecker"
+        }
+      ]
+    },
+    {
+      "Name": "Xbox",
+      "Directory": "\\\\192.168.1.5\\Archive\\Minecraft\\Xbox - Microsoft.MinecraftUWPConsole_8wekyb3d8bbwe\\",
+      "Loaders": [
+        {
+          "Class": "CoreTool.Loaders.FileLoader"
+        },
+        {
+          "Class": "CoreTool.Loaders.StoreLoader",
+          "Params": [
+            "9NBLGGH537BL",
+            "Microsoft.MinecraftUWPConsole"
+          ]
+        }
+      ],
+      "Checkers": [
+        {
+          "Class": "CoreTool.Checkers.MetaChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.FileChecker"
+        }
+      ]
+    },
+    {
+      "Name": "Xbox Preview",
+      "Directory": "\\\\192.168.1.5\\Archive\\Minecraft\\Xbox - Microsoft.MinecraftUWPBeta_8wekyb3d8bbwe\\",
+      "Loaders": [
+        {
+          "Class": "CoreTool.Loaders.FileLoader"
+        },
+        {
+          "Class": "CoreTool.Loaders.StoreLoader",
+          "Params": [
+            "9MTK992XRFL2",
+            "Microsoft.MinecraftUWPBeta",
+            true,
+            true,
+            "service::www.microsoft.com::mbi_ssl"
+          ]
+        }
+      ],
+      "Checkers": [
+        {
+          "Class": "CoreTool.Checkers.MetaChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.FileChecker"
+        }
+      ]
+    },
+    {
+      "Name": "W10 Preview",
+      "Directory": "\\\\192.168.1.5\\Archive\\Minecraft\\Windows10 - Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe\\",
+      "Loaders": [
+        {
+          "Class": "CoreTool.Loaders.FileLoader"
+        },
+        {
+          "Class": "CoreTool.Loaders.VersionDBLoader",
+          "Params": [
+            "Microsoft.MinecraftWindowsBeta"
+          ]
+        },
+        {
+          "Class": "CoreTool.Loaders.StoreLoader",
+          "Params": [
+            "9P5X4QVLC2XR",
+            "Microsoft.MinecraftWindowsBeta",
+            false
+          ]
+        }
+      ],
+      "Checkers": [
+        {
+          "Class": "CoreTool.Checkers.MetaChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.FileChecker"
+        }
+      ]
+    }
+  ]
+}

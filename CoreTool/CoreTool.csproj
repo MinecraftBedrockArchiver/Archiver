@@ -16,6 +16,12 @@
     <ProjectReference Include="..\StoreLib\StoreLib\StoreLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="XCOPY &quot;$(SolutionDir)$(Platform)\$(Configuration)\WUTokenHelper.dll&quot; &quot;$(TargetDir)&quot; /D /K /Y" />
   </Target>

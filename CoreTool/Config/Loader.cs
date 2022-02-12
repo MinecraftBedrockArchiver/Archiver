@@ -9,20 +9,20 @@ namespace CoreTool.Config
     internal class Loader
     {
         private const string configFile = "config.json";
+        private static ConfigData _config;
 
-        public static List<ArchiveMeta> Load()
+        public static ConfigData Config => _config ??= Load();
+
+        private static ConfigData Load()
         {
             Utils.GenericLogger.Write("Loading config from " + configFile);
 
             if (!File.Exists(configFile))
             {
-                File.WriteAllText(configFile, "[\n  {\n    \"Name\": \"W10\",\n    \"Directory\": \".\\\\Windows10 - Microsoft.MinecraftUWP_8wekyb3d8bbwe\\\\\",\n    \"Loaders\": [\n      {\n      \"Class\": \"CoreTool.Loaders.FileLoader\"\n      },\n      {\n      \"Class\": \"CoreTool.Loaders.VersionDBLoader\"\n      },\n      {\n      \"Class\": \"CoreTool.Loaders.StoreLoader\",\n      \"Params\": [\n        \"9NBLGGH2JHXJ\",\n        \"Microsoft.MinecraftUWP\"\n      ]\n      }\n    ],\n    \"Checkers\": [\n      {\n      \"Class\": \"CoreTool.Checkers.MetaChecker\"\n      },\n      {\n      \"Class\": \"CoreTool.Checkers.FileChecker\"\n      }\n    ]\n  }\n]");
-                throw new FileNotFoundException("config.json not found, created a default one for you to fill out");
+                throw new FileNotFoundException("config.json not found, please recreate/download one!");
             }
 
-            List<ArchiveEntry> config = JsonConvert.DeserializeObject<List<ArchiveEntry>>(File.ReadAllText(configFile));
-
-            return config.Select(x => x.Create()).ToList();
+            return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configFile));
         }
     }
 }
