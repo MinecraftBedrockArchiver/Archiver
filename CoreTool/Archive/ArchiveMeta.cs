@@ -18,7 +18,7 @@ namespace CoreTool.Archive
         public string Name { get; internal set; }
         public string ArchiveMetaFile { get; internal set; }
 
-        private Dictionary<string, Item> metaItems;
+        private SortedDictionary<string, Item> metaItems;
 
         private List<ILoader> loaders;
         private List<IChecker> checkers;
@@ -56,11 +56,11 @@ namespace CoreTool.Archive
             // Load the meta or create a new one
             if (File.Exists(ArchiveMetaFile))
             {
-                metaItems = JsonConvert.DeserializeObject<Dictionary<string, Item>>(File.ReadAllText(ArchiveMetaFile));
+                metaItems = JsonConvert.DeserializeObject<SortedDictionary<string, Item>>(File.ReadAllText(ArchiveMetaFile));
             }
             else
             {
-                metaItems = new Dictionary<string, Item>();
+                metaItems = new SortedDictionary<string, Item>();
                 Save();
             }
         }

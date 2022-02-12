@@ -5,22 +5,22 @@ namespace CoreTool.Archive
 {
     internal class Item
     {
+        public string Version { get; set; }
+        public SortedDictionary<string, Arch> Archs { get; set; }
+
         public Item() { }
 
         public Item(string version)
         {
             Version = version;
-            Archs = new Dictionary<string, Arch>();
+            Archs = new SortedDictionary<string, Arch>();
         }
 
-        public Item(string version, Dictionary<string, Arch> archs)
+        public Item(string version, SortedDictionary<string, Arch> archs)
         {
             Version = version;
             Archs = archs;
         }
-
-        public string Version { get; set; }
-        public Dictionary<string, Arch> Archs { get; set; }
 
         internal void AddFile(string fileName)
         {
