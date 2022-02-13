@@ -210,10 +210,13 @@ namespace DataStoreExtractor
             // Tell the user the final packages
             Console.WriteLine();
             Console.WriteLine("Finished downloads:");
+            string output = "";
             foreach (string update in validUpdates.Keys)
             {
-                Console.WriteLine($"{update} -> {validUpdates[update]}");
+                output += $"{update} -> {validUpdates[update]}\n";
             }
+            Console.WriteLine(output);
+            File.WriteAllText(Path.Join(downloadFolder, "ids.txt"), output);
         }
     }
 }
