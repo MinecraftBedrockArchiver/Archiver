@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Database.ManagedEsent" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\mc-w10-version-launcher\WUTokenHelper\WUTokenHelper.vcxproj" />
+    <ProjectReference Include="..\StoreLib\StoreLib\StoreLib.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="XCOPY &quot;$(SolutionDir)$(Platform)\$(Configuration)\WUTokenHelper.dll&quot; &quot;$(TargetDir)&quot; /D /K /Y" />
+  </Target>
+
+</Project>

@@ -41,8 +41,14 @@ jobs:
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=${{env.BUILD_PLATFORM}} ${{env.SOLUTION_FILE_PATH}}
       
-    - name: Archive
+    - name: Archive CoreTool
       uses: actions/upload-artifact@v2
       with:
-        name: MinecraftW10Archiver
+        name: MinecraftAppxArchiver
         path: CoreTool\bin\x64\Release\net5.0\
+
+    - name: Archive DataStoreExtractor
+      uses: actions/upload-artifact@v2
+      with:
+        name: DataStoreExtractor
+        path: DataStoreExtractor\bin\x64\Release\net5.0\
