@@ -22,7 +22,7 @@ namespace DataStoreExtractor
             }
             catch (IOException)
             {
-                Console.WriteLine("Unable to copy the DataStore.edb, make sure the Windows Update (wuauserv) service");
+                Console.WriteLine("Unable to copy the DataStore.edb, make sure the Windows Update (wuauserv) service is stopped");
                 Environment.Exit(1);
             }
 

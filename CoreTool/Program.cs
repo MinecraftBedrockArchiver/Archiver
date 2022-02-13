@@ -54,9 +54,6 @@ namespace CoreTool
         {
             Utils.GenericLogger.Write("Checking for updates...");
 
-            // Grab a new token incase the other expired
-            string token = Authentication.GetWUToken();
-
             foreach (ArchiveMeta archive in Config.Loader.Config.ArchiveInstances)
             {
                 await archive.Load();
