@@ -52,6 +52,10 @@ namespace CoreTool
 
         private static async void OnUpdateEvent(object sender, ElapsedEventArgs e)
         {
+            // Stop the timer before we check
+            // This stops the timer ticking while we are still checking
+            updateTimer.Enabled = false;
+
             Utils.GenericLogger.Write("Checking for updates...");
 
             foreach (ArchiveMeta archive in Config.Loader.Config.ArchiveInstances)
@@ -65,6 +69,9 @@ namespace CoreTool
             {
                 await gitSync.Check();
             }
+
+            // Resume the timer
+            updateTimer.Enabled = true;
         }
     }
 }
