@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -135,6 +136,7 @@ namespace DataStoreExtractor
 
             IList<Uri> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{Authentication.GetWUToken()}</User>"); // TODO: Maybe add auth here?
 
+            HttpClient client = new HttpClient();
             WebClient wc = new WebClient();
             wc.DownloadProgressChanged += (s, e) => Console.Write("\r{0}%", e.ProgressPercentage);
 
@@ -151,6 +153,34 @@ namespace DataStoreExtractor
                     i++;
                     continue;
                 }
+
+                // Get the header of the download link and see if we get a package name from there so we can skip downloading
+                HttpResponseMessage response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, uri));
+                if (response.Content.Headers.ContentDisposition != null)
+                {
+                    Console.WriteLine(response.Content.Headers.ContentDisposition.FileName);
+                    if (response.Content.Headers.ContentDisposition.FileName.StartsWith("Microsoft.Minecraft"))
+                    {
+                        Console.WriteLine($"{updateIds[i]} is Minecraft");
+
+                        if (!cleanUp)
+                        {
+                            Console.WriteLine($"Downloading {updateIds[i]}");
+                            await wc.DownloadFileTaskAsync(uri, Path.Join(downloadFolder, response.Content.Headers.ContentDisposition.FileName));
+                        }
+
+                        validUpdates.Add(updateIds[i], response.Content.Headers.ContentDisposition.FileName);
+                        i++;
+                        continue;
+                    }
+                    else if (response.Content.Headers.ContentDisposition.FileName.StartsWith("Microsoft.VCLibs"))
+                    {
+                        Console.WriteLine($"{updateIds[i]} is VCLib");
+                        i++;
+                        continue;
+                    }
+                }
+
 
                 string downloadLocation = Path.Join(downloadFolder, updateIds[i]);
 
