@@ -134,7 +134,7 @@ namespace DataStoreExtractor
             List<string> updateIds = updatePackageMap.Keys.Select(x => x.ToString()).ToList();
             List<string> revisionIds = Enumerable.Repeat("1", updateIds.Count).ToList();
 
-            IList<Uri> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{Authentication.GetWUToken()}</User>"); // TODO: Maybe add auth here?
+            IList<Uri> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{Authentication.GetWUToken()}</User>");
 
             HttpClient client = new HttpClient();
             WebClient wc = new WebClient();

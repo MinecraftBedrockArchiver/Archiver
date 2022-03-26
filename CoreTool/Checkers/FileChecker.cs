@@ -45,6 +45,8 @@ namespace CoreTool.Checkers
                             {
                                 await wc.DownloadFileTaskAsync(uri, outPath);
                                 Console.WriteLine();
+                                archive.Logger.WriteWarn("Calculating file hashes, this may take tome time");
+                                arch.Hashes = new FileHashes(outPath);
                                 success = true;
                             }
                             catch (WebException ex)

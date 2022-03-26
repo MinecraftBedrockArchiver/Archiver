@@ -1,13 +1,13 @@
 {
   "GitSync": {
-    "Enabled": true,
+    "Enabled": false,
     "Repo": "https://github.com/rtm516/MinecraftAppxArchiverMeta",
     "Folder": ".\\GitSync\\"
   },
   "Archives": [
     {
       "Name": "W10",
-      "Directory": "\\\\192.168.1.5\\Archive\\Minecraft\\Windows10 - Microsoft.MinecraftUWP_8wekyb3d8bbwe\\",
+      "Directory": ".\\Windows10 - Microsoft.MinecraftUWP_8wekyb3d8bbwe\\",
       "Loaders": [
         {
           "Class": "CoreTool.Loaders.FileLoader"
@@ -32,12 +32,15 @@
         },
         {
           "Class": "CoreTool.Checkers.FileChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.HashChecker"
         }
       ]
     },
     {
       "Name": "Xbox",
-      "Directory": "\\\\192.168.1.5\\Archive\\Minecraft\\Xbox - Microsoft.MinecraftUWPConsole_8wekyb3d8bbwe\\",
+      "Directory": ".\\Xbox - Microsoft.MinecraftUWPConsole_8wekyb3d8bbwe\\",
       "Loaders": [
         {
           "Class": "CoreTool.Loaders.FileLoader"
@@ -56,12 +59,15 @@
         },
         {
           "Class": "CoreTool.Checkers.FileChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.HashChecker"
         }
       ]
     },
     {
       "Name": "Xbox Preview",
-      "Directory": "\\\\192.168.1.5\\Archive\\Minecraft\\Xbox - Microsoft.MinecraftUWPBeta_8wekyb3d8bbwe\\",
+      "Directory": ".\\Xbox - Microsoft.MinecraftUWPBeta_8wekyb3d8bbwe\\",
       "Loaders": [
         {
           "Class": "CoreTool.Loaders.FileLoader"
@@ -83,12 +89,15 @@
         },
         {
           "Class": "CoreTool.Checkers.FileChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.HashChecker"
         }
       ]
     },
     {
       "Name": "W10 Preview",
-      "Directory": "\\\\192.168.1.5\\Archive\\Minecraft\\Windows10 - Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe\\",
+      "Directory": ".\\Windows10 - Microsoft.MinecraftWindowsBeta_8wekyb3d8bbwe\\",
       "Loaders": [
         {
           "Class": "CoreTool.Loaders.FileLoader"
@@ -114,6 +123,9 @@
         },
         {
           "Class": "CoreTool.Checkers.FileChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.HashChecker"
         }
       ]
     }

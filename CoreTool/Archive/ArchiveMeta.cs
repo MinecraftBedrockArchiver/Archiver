@@ -53,14 +53,20 @@ namespace CoreTool.Archive
             this.loaders = loaders;
             this.checkers = checkers;
 
+            metaItems = new SortedDictionary<string, Item>(new VersionComparer());
+
             // Load the meta or create a new one
             if (File.Exists(ArchiveMetaFile))
             {
-                metaItems = JsonConvert.DeserializeObject<SortedDictionary<string, Item>>(File.ReadAllText(ArchiveMetaFile));
+                // We have to do it like this so we use the correct comparer
+                SortedDictionary<string, Item> loadedMetaItems = JsonConvert.DeserializeObject<SortedDictionary<string, Item>>(File.ReadAllText(ArchiveMetaFile));
+                foreach(var item in loadedMetaItems)
+                {
+                    metaItems[item.Key] = item.Value;
+                }
             }
             else
             {
-                metaItems = new SortedDictionary<string, Item>();
                 Save();
             }
         }
@@ -122,8 +128,7 @@ namespace CoreTool.Archive
             Logger.WriteRaw("\r{0}%", e.ProgressPercentage);
         }
 
-        #region Internal
-        private void Save()
+        internal void Save()
         {
             using (StreamWriter file = File.CreateText(ArchiveMetaFile))
             {
@@ -131,6 +136,5 @@ namespace CoreTool.Archive
                 serializer.Serialize(file, metaItems);
             }
         }
-        #endregion
     }
 }
