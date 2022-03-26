@@ -1,10 +1,5 @@
 ﻿using CoreTool.Archive;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CoreTool.Checkers
@@ -13,6 +8,8 @@ namespace CoreTool.Checkers
     {
         public Task Check(ArchiveMeta archive)
         {
+            archive.Logger.Write("Checking for missing file hashes...");
+
             bool hasChanges = false;
 
             foreach (Item item in archive.GetItems())
