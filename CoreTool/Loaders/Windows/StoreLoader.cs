@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoreTool.Loaders
+namespace CoreTool.Loaders.Windows
 {
     internal class StoreLoader : ILoader
     {
@@ -46,12 +46,14 @@ namespace CoreTool.Loaders
                     if (!package.PackageMoniker.StartsWith(packageName + "_")) continue;
                     if (package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 0) continue;
 
-                    // Create the meta and store it
-                    Item item = new Item(Utils.GetVersionFromName(package.PackageMoniker));
-                    item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new Arch(package.PackageMoniker + ".Appx", new List<Guid>() { Guid.Parse(package.UpdateId) });
-                    if (archive.AddOrUpdate(item, true)) archive.Logger.Write($"New version registered: {Utils.GetVersionFromName(package.PackageMoniker)}");
+                    string fullPackageName = package.PackageMoniker + ".Appx";
 
-                    releaseVer = Utils.GetVersionFromName(package.PackageMoniker);
+                    // Create the meta and store it
+                    Item item = new Item(Utils.GetVersionFromName(fullPackageName));
+                    item.Archs[Utils.GetArchFromName(fullPackageName)] = new Arch(fullPackageName, new List<string>() { Guid.Parse(package.UpdateId).ToString() });
+                    if (archive.AddOrUpdate(item, true)) archive.Logger.Write($"New version registered: {Utils.GetVersionFromName(fullPackageName)}");
+
+                    releaseVer = Utils.GetVersionFromName(fullPackageName);
                 }
             }
 
@@ -82,17 +84,19 @@ namespace CoreTool.Loaders
                         if (!package.PackageMoniker.StartsWith(packageName + "_")) continue;
                         if (package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 0) continue;
 
+                        string fullPackageName = package.PackageMoniker + ".Appx";
+
                         // Check we haven't got a release version in the beta request
-                        if (Utils.GetVersionFromName(package.PackageMoniker) == releaseVer)
+                        if (Utils.GetVersionFromName(fullPackageName) == releaseVer)
                         {
                             archive.Logger.WriteError($"You need to opt into the beta! Release version found in beta request. See https://aka.ms/JoinMCBeta");
                             break;
                         }
 
                         // Create the meta and store it
-                        Item item = new Item(Utils.GetVersionFromName(package.PackageMoniker));
-                        item.Archs[Utils.GetArchFromName(package.PackageMoniker)] = new Arch(package.PackageMoniker + ".Appx", new List<Guid>() { Guid.Parse(package.UpdateId) });
-                        if (archive.AddOrUpdate(item, true)) archive.Logger.Write($"New version registered: {Utils.GetVersionFromName(package.PackageMoniker)}");
+                        Item item = new Item(Utils.GetVersionFromName(fullPackageName));
+                        item.Archs[Utils.GetArchFromName(fullPackageName)] = new Arch(fullPackageName, new List<string>() { Guid.Parse(package.UpdateId).ToString() });
+                        if (archive.AddOrUpdate(item, true)) archive.Logger.Write($"New version registered: {Utils.GetVersionFromName(fullPackageName)}");
                     }
                 }
             }

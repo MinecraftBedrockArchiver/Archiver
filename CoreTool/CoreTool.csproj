@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <PlatformTarget>x64</PlatformTarget>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
@@ -12,12 +12,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GooglePlayApi\GooglePlayApi.Popup\GooglePlayApi.Popup.csproj" />
+    <ProjectReference Include="..\GooglePlayApi\GooglePlayAPI\GooglePlayApi.csproj" />
     <ProjectReference Include="..\mc-w10-version-launcher\WUTokenHelper\WUTokenHelper.vcxproj" />
     <ProjectReference Include="..\StoreLib\StoreLib\StoreLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DeviceProperties\octopus.properties">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DeviceProperties\violet.properties">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

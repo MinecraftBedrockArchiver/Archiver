@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace CoreTool.Checkers
+namespace CoreTool.Checkers.Windows
 {
     internal class FileChecker : IChecker
     {
@@ -45,7 +45,7 @@ namespace CoreTool.Checkers
                             {
                                 await wc.DownloadFileTaskAsync(uri, outPath);
                                 Console.WriteLine();
-                                archive.Logger.WriteWarn("Calculating file hashes, this may take tome time");
+                                archive.Logger.WriteWarn("Calculating file hashes, this may take some time");
                                 arch.Hashes = new FileHashes(outPath);
                                 success = true;
                             }

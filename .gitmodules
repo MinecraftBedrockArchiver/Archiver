@@ -4,3 +4,6 @@
 [submodule "StoreLib"]
 	path = StoreLib
 	url = https://github.com/rtm516/StoreLib.git
+[submodule "GooglePlayApi"]
+	path = GooglePlayApi
+	url = https://github.com/rtm516/GooglePlayApi

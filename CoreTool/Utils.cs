@@ -1,4 +1,11 @@
-﻿using System.Diagnostics;
+﻿using GooglePlayApi;
+using GooglePlayApi.Helpers;
+using GooglePlayApi.Models;
+using GooglePlayApi.Popup;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace CoreTool
@@ -9,7 +16,25 @@ namespace CoreTool
 
         public static readonly Log GenericLogger = new Log();
 
+        private static readonly JsonSerializerOptions serializeOptions = new JsonSerializerOptions { Converters = { new CultureInfoJsonConverter() } };
+
         public static string GetVersionFromName(string name)
+        {
+            if (name.ToLower().EndsWith(".appx"))
+            {
+                return GetVersionFromNameAppx(name);
+            }
+            else if (name.ToLower().EndsWith(".apk") || name.ToLower().EndsWith(".apks"))
+            {
+                return name.Split("-")[1];
+            }
+            else
+            {
+                return "unknown";
+            }
+        }
+
+        private static string GetVersionFromNameAppx(string name)
         {
             string rawVer = name.Split("_")[1];
             string[] verParts = rawVer.Split('.');
@@ -49,7 +74,18 @@ namespace CoreTool
 
         public static string GetArchFromName(string name)
         {
-            return name.Split("_")[2];
+            if (name.ToLower().EndsWith(".appx"))
+            {
+                return name.Split("_")[2];
+            }
+            else if (name.ToLower().EndsWith(".apk") || name.ToLower().EndsWith(".apks"))
+            {
+                return name.Substring(name.IndexOf('-', name.IndexOf('-') + 1) + 1).Split(".")[0];
+            }
+            else
+            {
+                return "unknown";
+            }
         }
 
         // https://stackoverflow.com/a/10789196/5299903
@@ -119,6 +155,40 @@ namespace CoreTool
             }
 
             return lx - ly;
+        }
+
+        public static async Task<AuthData> GetGooglePlayAuthData(string cacheFile, string deviceProperties = "octopus.properties")
+        {
+            AuthData authData;
+
+            if (!File.Exists(cacheFile))
+            {
+                (string Email, string OauthToken) authResponse = AuthPopupForm.GetOAuthToken();
+                authData = await AuthHelper.Build(authResponse.Email, authResponse.OauthToken, deviceProperties);
+            }
+            else
+            {
+                // Get cached auth
+                using (FileStream readStream = File.OpenRead(cacheFile))
+                    authData = await JsonSerializer.DeserializeAsync<AuthData>(readStream, serializeOptions);
+
+                // Re-aquire tokens
+                // TODO: Check if they are still valid
+                authData = await AuthHelper.Build(authData.Email, authData.AasToken, deviceProperties);
+            }
+
+            // Save latest auth to cache file
+            try
+            {
+                using (FileStream writeStream = File.Create(cacheFile))
+                    await JsonSerializer.SerializeAsync(writeStream, authData, serializeOptions);
+            }
+            catch (JsonException ex)
+            {
+                GenericLogger.WriteError(ex.Message);
+            }
+
+            return authData;
         }
     }
 }

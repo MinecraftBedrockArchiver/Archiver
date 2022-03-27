@@ -13,13 +13,13 @@
           "Class": "CoreTool.Loaders.FileLoader"
         },
         {
-          "Class": "CoreTool.Loaders.VersionDBLoader",
+          "Class": "CoreTool.Loaders.Windows.VersionDBLoader",
           "Params": [
             "Microsoft.MinecraftUWP"
           ]
         },
         {
-          "Class": "CoreTool.Loaders.StoreLoader",
+          "Class": "CoreTool.Loaders.Windows.StoreLoader",
           "Params": [
             "9NBLGGH2JHXJ",
             "Microsoft.MinecraftUWP"
@@ -31,7 +31,7 @@
           "Class": "CoreTool.Checkers.MetaChecker"
         },
         {
-          "Class": "CoreTool.Checkers.FileChecker"
+          "Class": "CoreTool.Checkers.Windows.FileChecker"
         },
         {
           "Class": "CoreTool.Checkers.HashChecker"
@@ -46,7 +46,7 @@
           "Class": "CoreTool.Loaders.FileLoader"
         },
         {
-          "Class": "CoreTool.Loaders.StoreLoader",
+          "Class": "CoreTool.Loaders.Windows.StoreLoader",
           "Params": [
             "9NBLGGH537BL",
             "Microsoft.MinecraftUWPConsole"
@@ -58,7 +58,7 @@
           "Class": "CoreTool.Checkers.MetaChecker"
         },
         {
-          "Class": "CoreTool.Checkers.FileChecker"
+          "Class": "CoreTool.Checkers.Windows.FileChecker"
         },
         {
           "Class": "CoreTool.Checkers.HashChecker"
@@ -73,7 +73,7 @@
           "Class": "CoreTool.Loaders.FileLoader"
         },
         {
-          "Class": "CoreTool.Loaders.StoreLoader",
+          "Class": "CoreTool.Loaders.Windows.StoreLoader",
           "Params": [
             "9MTK992XRFL2",
             "Microsoft.MinecraftUWPBeta",
@@ -88,7 +88,7 @@
           "Class": "CoreTool.Checkers.MetaChecker"
         },
         {
-          "Class": "CoreTool.Checkers.FileChecker"
+          "Class": "CoreTool.Checkers.Windows.FileChecker"
         },
         {
           "Class": "CoreTool.Checkers.HashChecker"
@@ -103,13 +103,13 @@
           "Class": "CoreTool.Loaders.FileLoader"
         },
         {
-          "Class": "CoreTool.Loaders.VersionDBLoader",
+          "Class": "CoreTool.Loaders.Windows.VersionDBLoader",
           "Params": [
             "Microsoft.MinecraftWindowsBeta"
           ]
         },
         {
-          "Class": "CoreTool.Loaders.StoreLoader",
+          "Class": "CoreTool.Loaders.Windows.StoreLoader",
           "Params": [
             "9P5X4QVLC2XR",
             "Microsoft.MinecraftWindowsBeta",
@@ -122,7 +122,76 @@
           "Class": "CoreTool.Checkers.MetaChecker"
         },
         {
-          "Class": "CoreTool.Checkers.FileChecker"
+          "Class": "CoreTool.Checkers.Windows.FileChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.HashChecker"
+        }
+      ]
+    },
+    {
+      "Name": "Android-PE",
+      "Directory": ".\\Android - com.mojang.minecraftpe\\",
+      "Loaders": [
+        {
+          "Class": "CoreTool.Loaders.FileLoader",
+          "Params": [
+            "apk",
+            "apks"
+          ]
+        },
+        {
+          "Class": "CoreTool.Loaders.Android.VersionDBLoader"
+        }
+      ],
+      "Checkers": [
+        {
+          "Class": "CoreTool.Checkers.MetaChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.Android.FileChecker",
+          "Params": [
+            "com.mojang.minecraftpe",
+            "arm64-v8a",
+            "violet.properties"
+          ]
+        },
+        {
+          "Class": "CoreTool.Checkers.Android.FileChecker",
+          "Params": [
+            "com.mojang.minecraftpe",
+            "armeabi-v7a",
+            "violet.properties"
+          ]
+        },
+        {
+          "Class": "CoreTool.Checkers.HashChecker"
+        }
+      ]
+    },
+    {
+      "Name": "Android-Edu",
+      "Directory": ".\\Android - com.mojang.minecraftedu\\",
+      "Loaders": [
+        {
+          "Class": "CoreTool.Loaders.FileLoader",
+          "Params": [
+            "apk",
+            "apks"
+          ]
+        }
+      ],
+      "Checkers": [
+        {
+          "Class": "CoreTool.Checkers.MetaChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.Android.FileChecker",
+          "Params": [
+            "com.mojang.minecraftedu",
+            "x86_64",
+            "octopus.properties"
+          ]
         },
         {
           "Class": "CoreTool.Checkers.HashChecker"

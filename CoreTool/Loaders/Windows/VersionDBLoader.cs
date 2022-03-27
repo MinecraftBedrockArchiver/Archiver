@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace CoreTool.Loaders
+namespace CoreTool.Loaders.Windows
 {
     internal class VersionDBLoader : ILoader
     {
@@ -47,7 +47,7 @@ namespace CoreTool.Loaders
 
                 // Create the meta and store it
                 Item item = new Item(Utils.GetVersionFromName(name));
-                item.Archs[Utils.GetArchFromName(name)] = new Arch(name, new List<Guid>() { Guid.Parse(updateId) });
+                item.Archs[Utils.GetArchFromName(name)] = new Arch(name, new List<string>() { Guid.Parse(updateId).ToString() });
                 if (archive.AddOrUpdate(item, true)) archive.Logger.Write($"New version registered: {Utils.GetVersionFromName(name)}");
             }
         }

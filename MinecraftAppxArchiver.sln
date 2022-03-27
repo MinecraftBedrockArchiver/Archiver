@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreLib", "StoreLib\StoreL
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WUTokenHelper", "mc-w10-version-launcher\WUTokenHelper\WUTokenHelper.vcxproj", "{B7336BA7-1E83-43D8-BD0E-3D44C6E3D4E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStoreExtractor", "DataStoreExtractor\DataStoreExtractor.csproj", "{335026DF-3B85-4EF0-892D-4DC542E619DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataStoreExtractor", "DataStoreExtractor\DataStoreExtractor.csproj", "{335026DF-3B85-4EF0-892D-4DC542E619DB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GooglePlayApi", "GooglePlayApi\GooglePlayAPI\GooglePlayApi.csproj", "{F421EB33-9DD9-4A11-9382-A7BF058EC721}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GooglePlayApi.Popup", "GooglePlayApi\GooglePlayApi.Popup\GooglePlayApi.Popup.csproj", "{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +71,30 @@ Global
 		{335026DF-3B85-4EF0-892D-4DC542E619DB}.Release|x64.Build.0 = Release|x64
 		{335026DF-3B85-4EF0-892D-4DC542E619DB}.Release|x86.ActiveCfg = Release|Any CPU
 		{335026DF-3B85-4EF0-892D-4DC542E619DB}.Release|x86.Build.0 = Release|Any CPU
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Debug|x64.ActiveCfg = Debug|x64
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Debug|x64.Build.0 = Debug|x64
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Debug|x86.Build.0 = Debug|Any CPU
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Release|x64.ActiveCfg = Release|x64
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Release|x64.Build.0 = Release|x64
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Release|x86.ActiveCfg = Release|Any CPU
+		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Release|x86.Build.0 = Release|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Debug|x64.Build.0 = Debug|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Debug|x86.Build.0 = Debug|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Release|x64.ActiveCfg = Release|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Release|x64.Build.0 = Release|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Release|x86.ActiveCfg = Release|Any CPU
+		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
