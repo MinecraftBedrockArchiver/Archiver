@@ -39,6 +39,8 @@ namespace CoreTool.Checkers.Android
             AppDetailsHelper appDetailsHelper = null;
             PurchaseHelper purchaseHelper = null;
 
+            bool hasChanges = false;
+
             foreach (Archive.Item item in archive.GetItems())
             {
                 foreach (Arch arch in item.Archs.Values)
@@ -47,10 +49,9 @@ namespace CoreTool.Checkers.Android
 
                     string rawFileName = Path.GetFileNameWithoutExtension(arch.FileName);
 
-                    string outPathApk = Path.Join(archive.ArchiveDir, rawFileName + ".apk");
-                    string outPathApks = Path.Join(archive.ArchiveDir, rawFileName + ".apks");
+                    string outPathApk = Path.Join(archive.ArchiveDir, arch.FileName);
 
-                    if (!File.Exists(outPathApk) && !File.Exists(outPathApks) && arch.UpdateIds.Count >= 1)
+                    if (!File.Exists(outPathApk) && arch.UpdateIds.Count >= 1)
                     {
                         // Get auth data if its null
                         if (authData == null)
@@ -96,7 +97,9 @@ namespace CoreTool.Checkers.Android
                                 archive.Logger.WriteWarn("Calculating file hashes, this may take some time");
                                 arch.Hashes = new FileHashes(outPathApk);
 
-                                arch.FileName = outPathApk;
+                                arch.FileName = Path.GetFileName(outPathApk);
+
+                                hasChanges = true;
                             }
                             catch (WebException ex)
                             {
@@ -108,55 +111,15 @@ namespace CoreTool.Checkers.Android
                         }
                         else
                         {
-                            string apkFolder = "./tmp/" + rawFileName + "/";
-                            try
-                            {
-                                archive.Logger.Write($"{rawFileName} is split, downloading parts to temp...");
-
-                                if (!Directory.Exists(apkFolder))
-                                {
-                                    Directory.CreateDirectory(apkFolder);
-                                }
-
-                                // Download the base apk
-                                archive.Logger.Write($"Downloading base.apk");
-                                await wc.DownloadFileTaskAsync(appDelivery.AppDeliveryData.DownloadUrl, apkFolder + "base.apk");
-                                Console.WriteLine();
-
-                                // Download the split parts
-                                foreach (SplitDeliveryData splitDeliveryData in appDelivery.AppDeliveryData.SplitDeliveryData)
-                                {
-                                    string splitName = "split_" + splitDeliveryData.Name + ".apk";
-                                    archive.Logger.Write($"Downloading " + splitName);
-                                    await wc.DownloadFileTaskAsync(new Uri(splitDeliveryData.DownloadUrl), apkFolder + splitName);
-                                    Console.WriteLine();
-                                }
-
-                                // Zip the split apk parts into the archive
-                                archive.Logger.Write($"Merging split apks...");
-                                ZipFile.CreateFromDirectory(apkFolder, outPathApks);
-
-                                Directory.Delete(apkFolder, true);
-
-                                archive.Logger.WriteWarn("Calculating file hashes, this may take some time");
-                                arch.Hashes = new FileHashes(outPathApks);
-
-                                arch.FileName = outPathApks;
-                            }
-                            catch (WebException ex)
-                            {
-                                // The download threw an exception so let the user know and cleanup
-                                Console.WriteLine();
-                                archive.Logger.WriteError($"Failed to download: {ex.Message}");
-
-                                if (Directory.Exists(apkFolder))
-                                {
-                                    Directory.Delete(apkFolder, true);
-                                }
-                            }
+                            archive.Logger.WriteWarn($"Recieved split apk ignoring");
                         }
                     }
                 }
+            }
+            
+            if (hasChanges)
+            {
+                archive.Save();
             }
         }
     }

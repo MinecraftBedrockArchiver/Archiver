@@ -20,6 +20,8 @@ namespace CoreTool.Checkers.Windows
 
             string token = archive.GetToken();
 
+            bool hasChanges = false;
+
             foreach (Item item in archive.GetItems())
             {
                 foreach (Arch arch in item.Archs.Values)
@@ -48,6 +50,7 @@ namespace CoreTool.Checkers.Windows
                                 archive.Logger.WriteWarn("Calculating file hashes, this may take some time");
                                 arch.Hashes = new FileHashes(outPath);
                                 success = true;
+                                hasChanges = true;
                             }
                             catch (WebException ex)
                             {
@@ -63,6 +66,11 @@ namespace CoreTool.Checkers.Windows
                         if (!success) archive.Logger.WriteError($"Failed to download from any urls");
                     }
                 }
+            }
+
+            if (hasChanges)
+            {
+                archive.Save();
             }
         }
     }

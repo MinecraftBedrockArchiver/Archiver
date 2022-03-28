@@ -136,8 +136,7 @@
         {
           "Class": "CoreTool.Loaders.FileLoader",
           "Params": [
-            "apk",
-            "apks"
+            "apk"
           ]
         },
         {
@@ -192,8 +191,7 @@
         {
           "Class": "CoreTool.Loaders.FileLoader",
           "Params": [
-            "apk",
-            "apks"
+            "apk"
           ]
         }
       ],

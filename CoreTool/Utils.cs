@@ -24,7 +24,7 @@ namespace CoreTool
             {
                 return GetVersionFromNameAppx(name);
             }
-            else if (name.ToLower().EndsWith(".apk") || name.ToLower().EndsWith(".apks"))
+            else if (name.ToLower().EndsWith(".apk"))
             {
                 return name.Split("-")[1];
             }
@@ -78,7 +78,7 @@ namespace CoreTool
             {
                 return name.Split("_")[2];
             }
-            else if (name.ToLower().EndsWith(".apk") || name.ToLower().EndsWith(".apks"))
+            else if (name.ToLower().EndsWith(".apk"))
             {
                 return name.Substring(name.IndexOf('-', name.IndexOf('-') + 1) + 1).Split(".")[0];
             }
