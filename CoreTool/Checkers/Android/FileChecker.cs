@@ -66,6 +66,7 @@ namespace CoreTool.Checkers.Android
 
                         DeliveryResponse appDelivery = await purchaseHelper.GetDeliveryResponse(packageName, int.Parse(arch.UpdateIds[0]), 1);
 
+                        // Check if the delivery failed and alert the user
                         if (appDelivery.Status != 1)
                         {
                             string reason = "Unknown";
@@ -80,11 +81,12 @@ namespace CoreTool.Checkers.Android
                                     break;
                             }
 
-                            archive.Logger.WriteWarn($"Failed to download {rawFileName} as delivery returned: {reason} ({appDelivery.Status})");
+                            archive.Logger.WriteError($"Failed to download {rawFileName} as delivery returned: {reason} ({appDelivery.Status})");
                             continue;
                         }
 
-                        if (appDelivery.AppDeliveryData.SplitDeliveryData == null)
+                        // Check if the apk is split or not
+                        if (appDelivery.AppDeliveryData.SplitDeliveryData.Count == 0)
                         {
                             try
                             {
@@ -93,6 +95,8 @@ namespace CoreTool.Checkers.Android
 
                                 archive.Logger.WriteWarn("Calculating file hashes, this may take some time");
                                 arch.Hashes = new FileHashes(outPathApk);
+
+                                arch.FileName = outPathApk;
                             }
                             catch (WebException ex)
                             {
@@ -128,13 +132,16 @@ namespace CoreTool.Checkers.Android
                                     Console.WriteLine();
                                 }
 
+                                // Zip the split apk parts into the archive
                                 archive.Logger.Write($"Merging split apks...");
                                 ZipFile.CreateFromDirectory(apkFolder, outPathApks);
+
+                                Directory.Delete(apkFolder, true);
 
                                 archive.Logger.WriteWarn("Calculating file hashes, this may take some time");
                                 arch.Hashes = new FileHashes(outPathApks);
 
-                                Directory.Delete(apkFolder, true);
+                                arch.FileName = outPathApks;
                             }
                             catch (WebException ex)
                             {
