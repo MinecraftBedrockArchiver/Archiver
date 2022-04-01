@@ -14,7 +14,27 @@ namespace DataStoreExtractor
 {
     internal class Program
     {
+        private static List<string> updateIds = new List<string>();
+
+        private static string[] wantedIds = new string[] {
+            "9NBLGGH2JHXJ", // Microsoft.MinecraftUWP
+	        "9P5X4QVLC2XR", // Microsoft.MinecraftWindowsBeta
+            "9NBLGGH537BL", // Microsoft.MinecraftUWPConsole
+	        "9MTK992XRFL2" // Microsoft.MinecraftUWPBeta
+        };
+
         static async Task Main(string[] args)
+        {
+            CopyDatastore();
+
+            CollectFromDatastore(); // Read the datastore properly
+
+            ExtractFromDatatstore(); // Carve the bytes out of the datastore to find any other ids
+
+            await DownloadAndCheck();
+        }
+
+        private static void CopyDatastore()
         {
             try
             {
@@ -26,16 +46,13 @@ namespace DataStoreExtractor
                 Console.WriteLine("Unable to copy the DataStore.edb, make sure the Windows Update (wuauserv) service is stopped");
                 Environment.Exit(1);
             }
+        }
 
-            string[] wantedIds = new string[] {
-                "9NBLGGH2JHXJ", // Microsoft.MinecraftUWP
-	            "9P5X4QVLC2XR" // Microsoft.MinecraftWindowsBeta
-            };
-
+        private static void CollectFromDatastore()
+        {
             Dictionary<Guid, string> updatePackageMap = new Dictionary<Guid, string>();
 
             // Setup the edb reading
-            #region Load DB
             JET_INSTANCE instance;
             JET_SESID sesid;
             JET_DBID dbid;
@@ -52,7 +69,6 @@ namespace DataStoreExtractor
             Api.JetAttachDatabase(sesid, @"DataStore.edb", AttachDatabaseGrbit.ReadOnly);
 
             Api.OpenDatabase(sesid, @"DataStore.edb", out dbid, OpenDatabaseGrbit.ReadOnly);
-            #endregion
 
             // Pull from history
             Api.OpenTable(sesid, dbid, "tbHistory", OpenTableGrbit.None, out tableid);
@@ -110,8 +126,42 @@ namespace DataStoreExtractor
                 Console.WriteLine($"{item.Value} -> {item.Key}");
             }
 
+            updateIds.AddRange(updatePackageMap.Keys.Select(x => x.ToString()).ToList());
+        }
+
+        private static void ExtractFromDatatstore()
+        {
+            byte[] dataStoreBytes = File.ReadAllBytes("./DataStore.edb");
+            byte[] pattern = new byte[] { 0x16, 0x20, 0x7F };
+
+            // Find update ids
+            for (int i = 0; i < dataStoreBytes.Length - pattern.Length; i++)
+            {
+                bool match = true;
+                for (int k = 0; k < pattern.Length; k++)
+                {
+                    if (dataStoreBytes[i + k] != pattern[k])
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match)
+                {
+                    byte[] tmpId = new byte[16];
+                    Array.Copy(dataStoreBytes, i + pattern.Length, tmpId, 0, 16);
+                    updateIds.Add(new Guid(tmpId).ToString());
+                }
+            }
+        }
+
+        private static async Task DownloadAndCheck()
+        {
+            // Remove duplicates
+            updateIds = updateIds.Distinct().ToList();
+
             // Ask the user what they want to do
-            Console.WriteLine();
+            Console.WriteLine($"Found {updateIds.Count} update ids");
             Console.Write("Do you want to try to download these and check they are valid? ");
             if (Console.ReadKey().KeyChar != 'y')
             {
@@ -131,7 +181,6 @@ namespace DataStoreExtractor
             Console.WriteLine();
 
             // Get the URLs
-            List<string> updateIds = updatePackageMap.Keys.Select(x => x.ToString()).ToList();
             List<string> revisionIds = Enumerable.Repeat("1", updateIds.Count).ToList();
 
             IList<Uri> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{Authentication.GetWUToken()}</User>");
@@ -167,6 +216,8 @@ namespace DataStoreExtractor
                         {
                             Console.WriteLine($"Downloading {updateIds[i]}");
                             await wc.DownloadFileTaskAsync(uri, Path.Join(downloadFolder, response.Content.Headers.ContentDisposition.FileName));
+
+                            Console.WriteLine();
                         }
 
                         validUpdates.Add(updateIds[i], response.Content.Headers.ContentDisposition.FileName);
@@ -176,6 +227,12 @@ namespace DataStoreExtractor
                     else if (response.Content.Headers.ContentDisposition.FileName.StartsWith("Microsoft.VCLibs"))
                     {
                         Console.WriteLine($"{updateIds[i]} is VCLib");
+                        i++;
+                        continue;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{updateIds[i]} is another package {response.Content.Headers.ContentDisposition.FileName}");
                         i++;
                         continue;
                     }
@@ -207,7 +264,21 @@ namespace DataStoreExtractor
                                 doc.Load(entry.Open());
 
                                 XmlNode identity = doc.GetElementsByTagName("Identity")[0];
-                                outName = $"{identity.Attributes["Name"].Value}_{identity.Attributes["Version"].Value}_{identity.Attributes["ProcessorArchitecture"].Value}__8wekyb3d8bbwe.Appx";
+                                string publisher = identity.Attributes["Publisher"].Value.StartsWith("CN=Microsoft Corporation") ? "__8wekyb3d8bbwe" : "";
+                                outName = $"{identity.Attributes["Name"].Value}_{identity.Attributes["Version"].Value}_{identity.Attributes["ProcessorArchitecture"].Value}{publisher}.Appx";
+
+                                validUpdates.Add(updateIds[i], outName);
+                                valid = true;
+                            } 
+                            else if (entry.Name == "AppxBundleManifest.xml")
+                            {
+                                // Load the AppxBundleManifest to work out the filename
+                                XmlDocument doc = new XmlDocument();
+                                doc.Load(entry.Open());
+
+                                XmlNode identity = doc.GetElementsByTagName("Identity")[0];
+                                string publisher = identity.Attributes["Publisher"].Value.StartsWith("CN=Microsoft Corporation") ? "__8wekyb3d8bbwe" : "";
+                                outName = $"{identity.Attributes["Name"].Value}_{identity.Attributes["Version"].Value}{publisher}.AppxBundle";
 
                                 validUpdates.Add(updateIds[i], outName);
                                 valid = true;
@@ -215,7 +286,7 @@ namespace DataStoreExtractor
                         }
                     }
 
-                    Console.WriteLine("Valid");
+                    Console.WriteLine(valid ? "Valid" : "Invalid");
                 }
                 catch (Exception ex)
                 {
@@ -247,6 +318,8 @@ namespace DataStoreExtractor
             }
             Console.WriteLine(output);
             File.WriteAllText(Path.Join(downloadFolder, "ids.txt"), output);
+
+            Console.WriteLine();
         }
     }
 }
