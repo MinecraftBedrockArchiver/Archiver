@@ -1,6 +1,3 @@
-[submodule "mc-w10-version-launcher"]
-	path = mc-w10-version-launcher
-	url = https://github.com/rtm516/mc-w10-version-launcher.git
 [submodule "StoreLib"]
 	path = StoreLib
 	url = https://github.com/rtm516/StoreLib.git

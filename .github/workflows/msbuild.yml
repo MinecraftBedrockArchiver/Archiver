@@ -29,7 +29,6 @@ jobs:
       shell: cmd
       run: |
         mklink /D ".\StoreLib\packages\" "%cd%\packages"
-        mklink /D ".\mc-w10-version-launcher\packages\" "%cd%\packages"
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}

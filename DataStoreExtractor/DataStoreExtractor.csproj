@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\mc-w10-version-launcher\WUTokenHelper\WUTokenHelper.vcxproj" />
     <ProjectReference Include="..\StoreLib\StoreLib\StoreLib.csproj" />
+    <ProjectReference Include="..\WUTokenHelper\WUTokenHelper.vcxproj" />
   </ItemGroup>
 
   <ItemGroup>
