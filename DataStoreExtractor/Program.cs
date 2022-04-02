@@ -14,7 +14,7 @@ namespace DataStoreExtractor
 {
     internal class Program
     {
-        private static List<string> updateIds = new List<string>();
+        private static List<string> UpdateIds { get; set; }  = new List<string>();
 
         private static string[] wantedIds = new string[] {
             "9NBLGGH2JHXJ", // Microsoft.MinecraftUWP
@@ -126,7 +126,7 @@ namespace DataStoreExtractor
                 Console.WriteLine($"{item.Value} -> {item.Key}");
             }
 
-            updateIds.AddRange(updatePackageMap.Keys.Select(x => x.ToString()).ToList());
+            UpdateIds.AddRange(updatePackageMap.Keys.Select(x => x.ToString()).ToList());
         }
 
         private static void ExtractFromDatatstore()
@@ -150,7 +150,7 @@ namespace DataStoreExtractor
                 {
                     byte[] tmpId = new byte[16];
                     Array.Copy(dataStoreBytes, i + pattern.Length, tmpId, 0, 16);
-                    updateIds.Add(new Guid(tmpId).ToString());
+                    UpdateIds.Add(new Guid(tmpId).ToString());
                 }
             }
         }
@@ -158,10 +158,10 @@ namespace DataStoreExtractor
         private static async Task DownloadAndCheck()
         {
             // Remove duplicates
-            updateIds = updateIds.Distinct().ToList();
+            UpdateIds = UpdateIds.Distinct().ToList();
 
             // Ask the user what they want to do
-            Console.WriteLine($"Found {updateIds.Count} update ids");
+            Console.WriteLine($"Found {UpdateIds.Count} update ids");
             Console.Write("Do you want to try to download these and check they are valid? ");
             if (Console.ReadKey().KeyChar != 'y')
             {
@@ -180,6 +180,44 @@ namespace DataStoreExtractor
 
             Console.WriteLine();
 
+            string downloadFolder = "./Downloads/";
+            Directory.CreateDirectory(downloadFolder);
+
+            int chunkSize = 250;
+
+            List<List<string>> updateIdsChunked = UpdateIds
+                .Select((x, i) => new { Index = i, Value = x })
+                .GroupBy(x => x.Index / chunkSize)
+                .Select(x => x.Select(v => v.Value).ToList())
+                .ToList();
+
+            Dictionary<string, string> validUpdates = new Dictionary<string, string>();
+            int i = 0;
+            foreach (List<string> updateIdsChunk in updateIdsChunked) {
+                i++;
+                Console.WriteLine($"Processing next chunk of {chunkSize} ({i}/{updateIdsChunked.Count}) updates");
+                foreach (KeyValuePair<string, string> validUpdate in await DownloadChunk(downloadFolder, cleanUp, updateIdsChunk))
+                {
+                    validUpdates[validUpdate.Key] = validUpdate.Value;
+                }
+            }
+
+            // Tell the user the final packages
+            Console.WriteLine();
+            Console.WriteLine("Finished downloads:");
+            string output = "";
+            foreach (string update in validUpdates.Keys)
+            {
+                output += $"{update} -> {validUpdates[update]}\n";
+            }
+            Console.WriteLine(output);
+            File.WriteAllText(Path.Join(downloadFolder, "ids.txt"), output);
+
+            Console.WriteLine();
+        }
+
+        private static async Task<Dictionary<string, string>> DownloadChunk(string downloadFolder, bool cleanUp, List<string> updateIds)
+        {
             // Get the URLs
             List<string> revisionIds = Enumerable.Repeat("1", updateIds.Count).ToList();
 
@@ -190,8 +228,6 @@ namespace DataStoreExtractor
             wc.DownloadProgressChanged += (s, e) => Console.Write("\r{0}%", e.ProgressPercentage);
 
             Dictionary<string, string> validUpdates = new Dictionary<string, string>();
-            string downloadFolder = "./Downloads/";
-            Directory.CreateDirectory(downloadFolder);
 
             // Download and check each update
             int i = 0;
@@ -207,7 +243,6 @@ namespace DataStoreExtractor
                 HttpResponseMessage response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, uri));
                 if (response.Content.Headers.ContentDisposition != null)
                 {
-                    Console.WriteLine(response.Content.Headers.ContentDisposition.FileName);
                     if (response.Content.Headers.ContentDisposition.FileName.StartsWith("Microsoft.Minecraft"))
                     {
                         Console.WriteLine($"{updateIds[i]} is Minecraft");
@@ -224,12 +259,6 @@ namespace DataStoreExtractor
                         i++;
                         continue;
                     }
-                    else if (response.Content.Headers.ContentDisposition.FileName.StartsWith("Microsoft.VCLibs"))
-                    {
-                        Console.WriteLine($"{updateIds[i]} is VCLib");
-                        i++;
-                        continue;
-                    }
                     else
                     {
                         Console.WriteLine($"{updateIds[i]} is another package {response.Content.Headers.ContentDisposition.FileName}");
@@ -238,19 +267,19 @@ namespace DataStoreExtractor
                     }
                 }
 
-
                 string downloadLocation = Path.Join(downloadFolder, updateIds[i]);
 
-                Console.WriteLine($"Downloading {updateIds[i]}");
-                await wc.DownloadFileTaskAsync(uri, downloadLocation);
-
-                Console.WriteLine();
-
-                Console.WriteLine($"Checking");
                 bool valid = false;
                 string outName = "";
                 try
                 {
+                    Console.WriteLine($"Downloading {updateIds[i]}");
+                    await wc.DownloadFileTaskAsync(uri, downloadLocation);
+
+                    Console.WriteLine();
+
+                    Console.WriteLine($"Checking");
+
                     // Read the downloaded file as a zip
                     // This will only work with appx files so we can validate the download
                     using (ZipArchive zip = ZipFile.Open(downloadLocation, ZipArchiveMode.Read))
@@ -269,7 +298,7 @@ namespace DataStoreExtractor
 
                                 validUpdates.Add(updateIds[i], outName);
                                 valid = true;
-                            } 
+                            }
                             else if (entry.Name == "AppxBundleManifest.xml")
                             {
                                 // Load the AppxBundleManifest to work out the filename
@@ -308,18 +337,7 @@ namespace DataStoreExtractor
                 i++;
             }
 
-            // Tell the user the final packages
-            Console.WriteLine();
-            Console.WriteLine("Finished downloads:");
-            string output = "";
-            foreach (string update in validUpdates.Keys)
-            {
-                output += $"{update} -> {validUpdates[update]}\n";
-            }
-            Console.WriteLine(output);
-            File.WriteAllText(Path.Join(downloadFolder, "ids.txt"), output);
-
-            Console.WriteLine();
+            return validUpdates;
         }
     }
 }
