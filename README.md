@@ -9,7 +9,7 @@ The metadata scraped by this tool on my instance is over at https://github.com/r
 * [Windows (9NBLGGH2JHXJ/Microsoft.MinecraftUWP)](https://www.microsoft.com/en-us/p/minecraft-for-windows/9nblggh2jhxj)
 * [Windows Preview (9P5X4QVLC2XR/Microsoft.MinecraftWindowsBeta)](https://www.microsoft.com/en-us/p/minecraft-preview-for-windows/9p5x4qvlc2xr)
 * [Xbox (9NBLGGH537BL/Microsoft.MinecraftUWPConsole)](https://www.microsoft.com/en-us/p/minecraft/9nblggh537bl)
-* [Xbox Preview (9MTK992XRFL2/Microsoft.MinecraftUWPBeta) - Currently broken due to it being insider only](https://www.microsoft.com/en-us/p/minecraft-uwp-preview/9mtk992xrfl2)
+* [Xbox Preview (9MTK992XRFL2/Microsoft.MinecraftUWPBeta)](https://www.microsoft.com/en-us/p/minecraft-uwp-preview/9mtk992xrfl2)
 
 ## Requirements
 * Windows 10/11 signed in as a Microsoft account and opted into any betas you wish to archive
