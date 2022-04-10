@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GooglePlayApi.Popup", "Goog
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WUTokenHelper", "WUTokenHelper\WUTokenHelper.vcxproj", "{B7336BA7-1E83-43D8-BD0E-3D44C6E3D4E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppxRenamer", "AppxRenamer\AppxRenamer.csproj", "{916983C2-E82D-47C9-B40C-19EF88AD6799}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -45,6 +47,9 @@ Global
 		{B7336BA7-1E83-43D8-BD0E-3D44C6E3D4E7}.Debug|x64.Build.0 = Debug|x64
 		{B7336BA7-1E83-43D8-BD0E-3D44C6E3D4E7}.Release|x64.ActiveCfg = Release|x64
 		{B7336BA7-1E83-43D8-BD0E-3D44C6E3D4E7}.Release|x64.Build.0 = Release|x64
+		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Debug|x64.ActiveCfg = Debug|x64
+		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Debug|x64.Build.0 = Debug|x64
+		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
