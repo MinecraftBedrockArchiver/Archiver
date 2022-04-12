@@ -1,7 +1,7 @@
 {
   "GitSync": {
     "Enabled": false,
-    "Repo": "https://github.com/rtm516/MinecraftAppxArchiverMeta",
+    "Repo": "https://github.com/MinecraftBedrockArchiver/Metadata",
     "Folder": ".\\GitSync\\"
   },
   "Archives": [

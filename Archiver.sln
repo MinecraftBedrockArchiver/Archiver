@@ -50,6 +50,7 @@ Global
 		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Debug|x64.ActiveCfg = Debug|x64
 		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Debug|x64.Build.0 = Debug|x64
 		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Release|x64.ActiveCfg = Release|x64
+		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

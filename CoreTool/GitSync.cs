@@ -1,5 +1,7 @@
 ﻿using CoreTool.Archive;
 using CoreTool.Config;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -45,9 +47,18 @@ namespace CoreTool
         public async Task Check()
         {
             Logger.Write("Collating archive meta files");
+            Dictionary<string, string> archives = new Dictionary<string, string>();
             foreach (ArchiveMeta archive in Loader.Config.ArchiveInstances)
             {
-                File.Copy(archive.ArchiveMetaFile, Path.Combine(Config.Folder, archive.Name.ToLower().Replace(' ', '_') + "_meta.json"), true);
+                string metaName = archive.Name.ToLower().Replace(' ', '_') + "_meta.json";
+                archives[archive.Name] = metaName;
+                File.Copy(archive.ArchiveMetaFile, Path.Combine(Config.Folder, metaName), true);
+            }
+
+            using (StreamWriter file = File.CreateText(Path.Combine(Config.Folder, "files.json")))
+            {
+                JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings() { Formatting = Formatting.Indented });
+                serializer.Serialize(file, archives);
             }
 
             Logger.Write("Checking for changes");

@@ -1,9 +1,9 @@
-# Minecraft Appx Archiver
-This tool automatically archives the latest W10/Xbox beta, release and preview appx files from the store and other sources periodically.
+# Archiver
+This tool automatically archives the latest versions of Minecraft: Bedrock including beta, release and preview files from the store and other sources periodically.
 
 See the StoreLib and WUTokenHelper folders for more information about those libraries.
 
-The metadata scraped by this tool on my instance is over at https://github.com/rtm516/MinecraftAppxArchiverMeta
+The metadata scraped by this tool on my instance is over at https://github.com/MinecraftBedrockArchiver/Metadata
 
 ## Current package support
 * [Windows (9NBLGGH2JHXJ/Microsoft.MinecraftUWP)](https://www.microsoft.com/en-us/p/minecraft-for-windows/9nblggh2jhxj)
