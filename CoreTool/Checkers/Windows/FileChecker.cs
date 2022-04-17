@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace CoreTool.Checkers.Windows
@@ -15,8 +16,7 @@ namespace CoreTool.Checkers.Windows
         {
             archive.Logger.Write("Checking for missing files...");
 
-            WebClient wc = new WebClient();
-            wc.DownloadProgressChanged += archive.DownloadProgressChanged;
+            HttpClient httpClient = new HttpClient();
 
             string token = await Utils.GetMicrosoftToken("msAuthInfo.json");
 
@@ -45,7 +45,7 @@ namespace CoreTool.Checkers.Windows
 
                             try
                             {
-                                await wc.DownloadFileTaskAsync(uri, outPath);
+                                await httpClient.DownloadFileTaskAsync(uri, outPath, archive.DownloadProgressChanged);
                                 Console.WriteLine();
                                 archive.Logger.WriteWarn("Calculating file hashes, this may take some time");
                                 arch.Hashes = new FileHashes(outPath);

@@ -11,6 +11,12 @@ using System.Threading.Tasks;
 using MicrosoftAuth;
 using MicrosoftAuth.Models.Token;
 using MSAuth.Popup;
+using System.Net.Http;
+using System.Net;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading;
 
 namespace CoreTool
 {
@@ -229,6 +235,6 @@ namespace CoreTool
             }
 
             return Convert.ToBase64String(Encoding.Unicode.GetBytes(requestedToken.Token));
-        } 
+        }
     }
 }

@@ -2,12 +2,8 @@
 using GooglePlayApi.Helpers;
 using GooglePlayApi.Models;
 using GooglePlayApi.Proto;
-using StoreLib.Services;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -32,8 +28,6 @@ namespace CoreTool.Checkers.Android
             archive.Logger.Write($"Checking for missing files for {arch}...");
 
             HttpClient httpClient = new HttpClient();
-            WebClient wc = new WebClient();
-            wc.DownloadProgressChanged += archive.DownloadProgressChanged;
 
             AuthData authData = null;
             AppDetailsHelper appDetailsHelper = null;
@@ -91,7 +85,7 @@ namespace CoreTool.Checkers.Android
                         {
                             try
                             {
-                                await wc.DownloadFileTaskAsync(appDelivery.AppDeliveryData.DownloadUrl, outPathApk);
+                                await httpClient.DownloadFileTaskAsync(appDelivery.AppDeliveryData.DownloadUrl, outPathApk, archive.DownloadProgressChanged);
                                 Console.WriteLine();
 
                                 archive.Logger.WriteWarn("Calculating file hashes, this may take some time");

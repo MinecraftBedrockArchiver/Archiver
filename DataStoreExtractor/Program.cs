@@ -225,8 +225,6 @@ namespace DataStoreExtractor
             IList<Uri> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{token}</User>");
 
             HttpClient client = new HttpClient();
-            WebClient wc = new WebClient();
-            wc.DownloadProgressChanged += (s, e) => Console.Write("\r{0}%", e.ProgressPercentage);
 
             Dictionary<string, string> validUpdates = new Dictionary<string, string>();
 
@@ -251,7 +249,7 @@ namespace DataStoreExtractor
                         if (!cleanUp)
                         {
                             Console.WriteLine($"Downloading {updateIds[i]}");
-                            await wc.DownloadFileTaskAsync(uri, Path.Join(downloadFolder, response.Content.Headers.ContentDisposition.FileName));
+                            await client.DownloadFileTaskAsync(uri, Path.Join(downloadFolder, response.Content.Headers.ContentDisposition.FileName), (s, e) => Console.Write("\r{0}%", e.ProgressPercentage));
 
                             Console.WriteLine();
                         }
@@ -275,7 +273,7 @@ namespace DataStoreExtractor
                 try
                 {
                     Console.WriteLine($"Downloading {updateIds[i]}");
-                    await wc.DownloadFileTaskAsync(uri, downloadLocation);
+                    await client.DownloadFileTaskAsync(uri, downloadLocation, (s, e) => Console.Write("\r{0}%", e.ProgressPercentage));
 
                     Console.WriteLine();
 

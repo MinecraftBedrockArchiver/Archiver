@@ -1,8 +1,5 @@
-﻿using CoreTool.Archive;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 using System.IO;
-using System.Linq;
 
 namespace CoreTool.Config
 {

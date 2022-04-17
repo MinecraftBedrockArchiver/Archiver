@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -121,7 +122,7 @@ namespace CoreTool.Archive
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        public void DownloadProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             Logger.WriteRaw("\r{0}%", e.ProgressPercentage);
         }
