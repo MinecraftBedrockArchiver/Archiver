@@ -1,4 +1,5 @@
-﻿namespace MicrosoftAuth.Models
+﻿#nullable disable
+namespace MicrosoftAuth.Models
 {
     internal class OAuthResponse
     {
@@ -16,6 +17,8 @@
         public string Username { get; set; }
         public string SigninName { get; set; }
         public string BackURL { get; set; }
+
+        public OAuthResponse() { }
 
     }
 }

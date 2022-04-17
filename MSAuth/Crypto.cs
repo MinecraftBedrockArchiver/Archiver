@@ -7,11 +7,7 @@ namespace MicrosoftAuth
     {
 
         public static byte[] CreateNonce(int size = 32)
-        {
-            byte[] rdm = new byte[size];
-            RandomNumberGenerator.Create().GetBytes(rdm);
-            return rdm;
-        }
+            => RandomNumberGenerator.GetBytes(size);
 
         public static string SignData(byte[] dataToSign, byte[] key, string keyUsage, byte[] nonce)
         {

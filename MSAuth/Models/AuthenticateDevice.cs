@@ -30,7 +30,7 @@ namespace MicrosoftAuth.Models
                 if (token.TokenError != null)
                     throw new InvalidDataException("Received faulty device token from response.");
 
-                return new AuthenticateDeviceResponse(token.Token as LegacyToken);
+                return new AuthenticateDeviceResponse((LegacyToken) token.Token!);
             }
 
             throw new IndexOutOfRangeException("No tokens received for device token request.");
@@ -38,7 +38,7 @@ namespace MicrosoftAuth.Models
 
         protected override void BuildSecurityInfo(XElement baseElement)
         {
-            baseElement.Element(XmlConstants.SOAP + "Header").Add(new XElement(XmlConstants.WSSE + "Security",
+            baseElement.Element(XmlConstants.SOAP + "Header")!.Add(new XElement(XmlConstants.WSSE + "Security",
                 new XElement(XmlConstants.WSSE + "UsernameToken",
                     new XAttribute(XmlConstants.WSU + "Id", "devicesoftware"),
                     new XElement(XmlConstants.WSSE + "Username", Name),

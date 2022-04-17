@@ -46,7 +46,7 @@ namespace MicrosoftAuth
         protected override void BuildSecurityInfo(XElement baseElement)
         {
             baseElement.Element(XmlConstants.SOAP + "Header")!.Add(new XElement(XmlConstants.WSSE + "Security",
-                XDocument.Parse(signingToken!.Token).FirstNode,
+                XDocument.Parse(SigningToken!.Token).FirstNode,
                 new XElement(XmlConstants.WSSE + "BinarySecurityToken",
                     BuildDeviceProofUri(),
                     new XAttribute("ValueType", "urn:liveid:sha1device"),

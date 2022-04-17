@@ -17,7 +17,7 @@ namespace MSAuth.Popup
             Cef.Initialize(new CefSettings());
             InitializeWebview();
 
-            usedBrowser.LoadUrl(authPopupUrl);
+            usedBrowser!.LoadUrl(authPopupUrl);
         }
 
         #region CefSharp Webview Code

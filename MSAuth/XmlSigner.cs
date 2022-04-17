@@ -66,11 +66,11 @@ namespace MicrosoftAuth
 
             var signatureXml = signedXml.GetXml();
 
-            var signature = XElement.Load(signatureXml.CreateNavigator().ReadSubtree());
+            var signature = XElement.Load(signatureXml.CreateNavigator()!.ReadSubtree());
             var signNs = XNamespace.Get("http://www.w3.org/2000/09/xmldsig#");
 
             baseElement.Add(signature);
-            baseElement.Element(signNs + "Signature")
+            baseElement.Element(signNs + "Signature")!
                 .Add(new XElement(signNs + "KeyInfo",
                     new XElement(XmlConstants.WSSE + "SecurityTokenReference",
                         new XElement(XmlConstants.WSSE + "Reference",
@@ -82,7 +82,7 @@ namespace MicrosoftAuth
 
         internal void AddSignature(XDocument document, LegacyToken signingToken)
         {
-            var header = document.Element(XmlConstants.SOAP + "Envelope").Element(XmlConstants.SOAP + "Header").Element(XmlConstants.WSSE + "Security");
+            var header = document.Element(XmlConstants.SOAP + "Envelope")!.Element(XmlConstants.SOAP + "Header")!.Element(XmlConstants.WSSE + "Security")!;
             BuildNonce(header);
             BuildSignature(document, header, signingToken);
         }
@@ -102,7 +102,7 @@ namespace MicrosoftAuth
 
             return new XElement("Reference",
                 new XAttribute("URI",
-                    "#" + (element.Element("Id") != null ? element.Element("Id").Value : element.Element(XmlConstants.WSU + "Id").Value)),
+                    "#" + (element.Element("Id") != null ? element.Element("Id")!.Value : element.Element(XmlConstants.WSU + "Id")!.Value)),
                 new XElement("Transforms",
                     new XElement("Transform",
                         new XAttribute("Algorithm", "http://www.w3.org/2001/10/xml-exc-c14n#")

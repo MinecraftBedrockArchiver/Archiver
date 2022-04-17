@@ -7,21 +7,25 @@ namespace MicrosoftAuth
     {
         public LegacyToken? AuthToken { get; set; }
 
-        public string name { get; set; }
-        public string password { get; set; }
-        public string? devicePuid { get; set; }
+        public string Name { get; set; }
+        public string Password { get; set; }
+        public string? DevicePuid { get; set; }
 
-        public MicrosoftDevice() {}
+        public MicrosoftDevice()
+        {
+            Name = "";
+            Password = "";
+        }
 
         public async Task<LegacyToken> AuthenticateDevice()
         {
             if (AuthToken != null && !AuthToken.IsExpired())
                 return AuthToken;
 
-            if (devicePuid == null)
+            if (DevicePuid == null)
                 await RegisterDevice();
 
-            var request = new AuthenticateDeviceRequest(name, password);
+            var request = new AuthenticateDeviceRequest(Name, Password);
 
             var response = await request.SendRequest();
 
@@ -48,19 +52,19 @@ namespace MicrosoftAuth
             for (int i = 0; i < 16; i++)
                 devicePassword += allowedAlphabet[rdm.Next(allowedAlphabet.Length)];
 
-            device.name = deviceName;
-            device.password = devicePassword;
+            device.Name = deviceName;
+            device.Password = devicePassword;
 
             return device;
         }
 
         private async Task RegisterDevice()
         {
-            var request = new AddDeviceRequest(name, password);
+            var request = new AddDeviceRequest(Name, Password);
 
             var response = await request.SendRequest();
 
-            devicePuid = response.Puid;
+            DevicePuid = response.Puid;
         }
     }
 }

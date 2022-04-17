@@ -8,8 +8,8 @@ namespace MicrosoftAuth
 {
     public class MicrosoftAccount
     {
-        public string CID { get; set; }
-        public string PUID { get; set; }
+        public string Cid { get; set; }
+        public string Puid { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public string Username { get; set; }
@@ -22,6 +22,12 @@ namespace MicrosoftAuth
 
         public MicrosoftAccount()
         {
+            Cid = "";
+            Puid = "";
+            Firstname = "";
+            Lastname = "";
+            Username = "";
+            DaToken = new LegacyToken();
             TokenCache = new Dictionary<string, BaseToken>();
         }
 
@@ -37,9 +43,9 @@ namespace MicrosoftAuth
                 rootObject[token.Key] = HttpUtility.UrlDecode(token.Value!.Value<string>());
             }
 
-            var parsedResponse = rootObject.ToObject<OAuthResponse>();
-            account.CID = parsedResponse.CID;
-            account.PUID = parsedResponse.PUID;
+            var parsedResponse = rootObject.ToObject<OAuthResponse>()!;
+            account.Cid = parsedResponse.CID;
+            account.Puid = parsedResponse.PUID;
             account.Firstname = parsedResponse.FirstName;
             account.Lastname = parsedResponse.LastName;
             account.Username = parsedResponse.Username;
@@ -64,13 +70,13 @@ namespace MicrosoftAuth
                 await Device.AuthenticateDevice();
             }
 
-            var request = new TokenRequest(DaToken, Device.AuthToken, appId, scope);
+            var request = new TokenRequest(DaToken, Device.AuthToken!, appId, scope);
 
             var response = await request.SendRequest();
 
             foreach (TokenResponse tokenResponse in response.Tokens)
             {
-                TokenCache[tokenResponse.Token.TokenScope.Address] = tokenResponse.Token;
+                TokenCache[tokenResponse.Token!.TokenScope!.Address] = tokenResponse.Token;
             }
 
             return TokenCache[scope.Address];

@@ -7,13 +7,13 @@ namespace MicrosoftAuth.Models
 {
     internal abstract class SecureTokenRequest<T> : BaseRequest<T> where T : class
     {
-        protected readonly LegacyToken? signingToken;
+        protected readonly LegacyToken? SigningToken;
         protected readonly string appId;
         protected readonly XmlSigner SigningContext;
 
         protected SecureTokenRequest(LegacyToken? token = null, string appId = "{DF60E2DF-88AD-4526-AE21-83D130EF0F68}") : base(AuthenticationConfig.RST_URL)
         {
-            signingToken = token;
+            SigningToken = token;
             this.appId = appId;
             SigningContext = new XmlSigner();
         }
@@ -22,13 +22,13 @@ namespace MicrosoftAuth.Models
         {
             var envelope = BuildEnvelope();
 
-            BuildHeader(envelope.Element(XmlConstants.SOAP + "Envelope"));
+            BuildHeader(envelope.Element(XmlConstants.SOAP + "Envelope")!);
 
-            BuildBody(envelope.Element(XmlConstants.SOAP + "Envelope"));
+            BuildBody(envelope.Element(XmlConstants.SOAP + "Envelope")!);
 
-            if (signingToken != null)
+            if (SigningToken != null)
             {
-                SigningContext.AddSignature(envelope, signingToken);
+                SigningContext.AddSignature(envelope, SigningToken);
             }
 
             return envelope;
@@ -73,7 +73,7 @@ namespace MicrosoftAuth.Models
 
             SigningContext.Add(authInfo);
 
-            baseElement.Element(XmlConstants.SOAP + "Header").Add(authInfo);
+            baseElement.Element(XmlConstants.SOAP + "Header")!.Add(authInfo);
 
             BuildSecurityInfo(baseElement);
         }
@@ -149,46 +149,46 @@ namespace MicrosoftAuth.Models
         protected override T ParseResponse(string responseText)
         {
             var xmlMessage = XDocument.Parse(responseText);
-            var soapEnvelope = xmlMessage.Element(XmlConstants.SOAP + "Envelope");
-            var soapHeader = soapEnvelope.Element(XmlConstants.SOAP + "Header");
-            var soapBody = soapEnvelope.Element(XmlConstants.SOAP + "Body");
+            var soapEnvelope = xmlMessage.Element(XmlConstants.SOAP + "Envelope")!;
+            var soapHeader = soapEnvelope.Element(XmlConstants.SOAP + "Header")!;
+            var soapBody = soapEnvelope.Element(XmlConstants.SOAP + "Body")!;
 
-            if (signingToken == null)
+            if (SigningToken == null)
                 return ParseDecryptedResponse(soapBody);
 
             var keyTokens = soapHeader.Element(XmlConstants.WSSE + "Security")!.Elements(XmlConstants.WSSC + "DerivedKeyToken");
             var encKeyToken = keyTokens.First(pred => pred.Attribute(XmlConstants.WSU + "Id")?.Value == "EncKey");
-            var encKeyNonce = encKeyToken.Element(XmlConstants.WSSC + "Nonce").Value;
+            var encKeyNonce = encKeyToken.Element(XmlConstants.WSSC + "Nonce")!.Value;
 
 
             byte[] nonce = Convert.FromBase64String(encKeyNonce);
-            byte[] key = Crypto.GenerateSharedKey(32, signingToken.BinarySecret, "WS-SecureConversationWS-SecureConversation", nonce);
+            byte[] key = Crypto.GenerateSharedKey(32, SigningToken.BinarySecret, "WS-SecureConversationWS-SecureConversation", nonce);
 
 
-            if (soapBody.Element(XmlConstants.SOAP + "Fault") != null)
+            if (soapBody!.Element(XmlConstants.SOAP + "Fault") != null)
             {
-                var encContainer = soapHeader.Element(XmlConstants.PSF + "EncryptedPP");
-                var encData = encContainer.Element(XmlConstants.XMLENC + "EncryptedData");
+                var encContainer = soapHeader.Element(XmlConstants.PSF + "EncryptedPP")!;
+                var encData = encContainer.Element(XmlConstants.XMLENC + "EncryptedData")!;
 
-                var cipherData = encData.Element(XmlConstants.XMLENC + "CipherData").Element(XmlConstants.XMLENC + "CipherValue").Value;
+                var cipherData = encData.Element(XmlConstants.XMLENC + "CipherData")!.Element(XmlConstants.XMLENC + "CipherValue")!.Value;
 
                 var decryptedError = Crypto.DecryptSecurityResponse(key, cipherData);
 
                 var response = new SecureTokenResponse();
-                response.Errors.Add(TokenErrorInfo.FromElement(XDocument.Parse(decryptedError).Element(XmlConstants.PSF + "pp")));
+                response.Errors.Add(TokenErrorInfo.FromElement(XDocument.Parse(decryptedError).Element(XmlConstants.PSF + "pp")!));
 
                 return ParseSecurityResponse(response);
             }
 
             if (soapBody.Element(XmlConstants.XMLENC + "EncryptedData") != null)
             {
-                var encData = soapBody.Element(XmlConstants.XMLENC + "EncryptedData");
+                var encData = soapBody.Element(XmlConstants.XMLENC + "EncryptedData")!;
 
-                var cipherData = encData.Element(XmlConstants.XMLENC + "CipherData").Element(XmlConstants.XMLENC + "CipherValue").Value;
+                var cipherData = encData.Element(XmlConstants.XMLENC + "CipherData")!.Element(XmlConstants.XMLENC + "CipherValue")!.Value;
 
                 var decryptedResponse = Crypto.DecryptSecurityResponse(key, cipherData);
 
-                return ParseDecryptedResponse(XDocument.Parse(decryptedResponse).Root);
+                return ParseDecryptedResponse(XDocument.Parse(decryptedResponse).Root!);
             }
 
             return ParseDecryptedResponse(soapBody);

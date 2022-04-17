@@ -40,7 +40,7 @@ namespace MicrosoftAuth.Models
 
             if (responseStatus)
             {
-                var puid = responseNode.Element("puid")?.Value;
+                var puid = responseNode!.Element("puid")?.Value!;
                 return new AddDeviceResponse(puid);
             }
             else

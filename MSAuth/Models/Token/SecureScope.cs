@@ -14,6 +14,6 @@ namespace MicrosoftAuth.Models.Token
         }
 
         public static SecureScope FromElement(XElement element)
-            => new(element.Element(XmlConstants.WSP + "AppliesTo").Element(XmlConstants.WSA + "EndpointReference").Element(XmlConstants.WSA + "Address").Value);
+            => new(element.Element(XmlConstants.WSP + "AppliesTo")!.Element(XmlConstants.WSA + "EndpointReference")!.Element(XmlConstants.WSA + "Address")!.Value);
     }
 }

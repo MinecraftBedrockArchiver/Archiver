@@ -16,16 +16,21 @@ namespace MicrosoftAuth.Models.Token
 
         public bool IsExpired() => DateTime.UtcNow.CompareTo(ExpirationTime) > 0;
 
-        public BaseToken() { }
+        internal BaseToken()
+        {
+            Token = "";
+        }
 
         internal BaseToken(DateTime start, DateTime end)
         {
+            Token = "";
             StartTime = start;
             ExpirationTime = end;
         }
 
         internal BaseToken(XElement element)
         {
+            Token = "";
             TokenScope = SecureScope.FromElement(element);
 
             var lifetimeInfo = element.Element(XmlConstants.WST + "Lifetime");
