@@ -78,7 +78,7 @@ namespace CoreTool.Loaders.Windows
                 await dcathandler.QueryDCATAsync(this.packageId, IdentiferType.ProductID, authentication);
                 if (dcathandler.Result == DisplayCatalogResult.Found)
                 {
-                    packages = await dcathandler.GetPackagesForProductAsync($"<User>{token}</User>");
+                    packages = await dcathandler.GetPackagesForProductAsync($"<User>{await Utils.GetMicrosoftToken("msAuthInfo.json")}</User>");
                     foreach (PackageInstance package in packages)
                     {
                         if (!package.PackageMoniker.StartsWith(packageName + "_")) continue;

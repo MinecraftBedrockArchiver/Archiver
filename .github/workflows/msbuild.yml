@@ -30,7 +30,7 @@ jobs:
     - name: Archive CoreTool
       uses: actions/upload-artifact@v2
       with:
-        name: MinecraftAppxArchiver
+        name: Archiver
         path: CoreTool\bin\x64\Release\net6.0-windows\win-x64\publish
 
     - name: Archive DataStoreExtractor
@@ -38,3 +38,9 @@ jobs:
       with:
         name: DataStoreExtractor
         path: DataStoreExtractor\bin\x64\Release\net6.0-windows\win-x64\publish
+
+    - name: Archive AppxRenamer
+      uses: actions/upload-artifact@v2
+      with:
+        name: AppxRenamer
+        path: AppxRenamer\bin\x64\Release\net6.0\win-x64\publish

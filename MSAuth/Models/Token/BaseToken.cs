@@ -16,7 +16,7 @@ namespace MicrosoftAuth.Models.Token
 
         public bool IsExpired() => DateTime.UtcNow.CompareTo(ExpirationTime) > 0;
 
-        internal BaseToken()
+        public BaseToken()
         {
             Token = "";
         }
