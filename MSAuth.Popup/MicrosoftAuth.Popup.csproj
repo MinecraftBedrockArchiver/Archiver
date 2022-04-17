@@ -5,9 +5,14 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LangVersion>default</LangVersion>
   </PropertyGroup>
 
@@ -15,10 +20,15 @@
     <LangVersion>default</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="cef.redist.x64" Version="100.0.14" />
-    <PackageReference Include="CefSharp.Common.NETCore" Version="100.0.140" />
-    <PackageReference Include="CefSharp.WinForms.NETCore" Version="100.0.140" />
+    <PackageReference Include="cef.redist.x64" Version="99.2.12" />
+    <PackageReference Include="cef.redist.x86" Version="99.2.12" />
+    <PackageReference Include="CefSharp.Common.NETCore" Version="99.2.120" />
+    <PackageReference Include="CefSharp.WinForms.NETCore" Version="99.2.120" />
   </ItemGroup>
 
 </Project>

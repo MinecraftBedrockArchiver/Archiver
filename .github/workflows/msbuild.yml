@@ -23,7 +23,7 @@ jobs:
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+      run: nuget restore ${{env.SOLUTION_FILE_PATH}} -r win-x64
 
     - name: Fix subproject packages
       shell: cmd
@@ -32,16 +32,16 @@ jobs:
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=${{env.BUILD_PLATFORM}} ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild /m /restore /p:SelfContained=False /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:RuntimeIdentifier=win-x64 /t:Publish /p:Platform=${{env.BUILD_PLATFORM}} ${{env.SOLUTION_FILE_PATH}}
       
     - name: Archive CoreTool
       uses: actions/upload-artifact@v2
       with:
         name: MinecraftAppxArchiver
-        path: CoreTool\bin\x64\Release\net5.0-windows\
+        path: CoreTool\bin\x64\Release\net5.0-windows\win-x64\publish
 
     - name: Archive DataStoreExtractor
       uses: actions/upload-artifact@v2
       with:
         name: DataStoreExtractor
-        path: DataStoreExtractor\bin\x64\Release\net5.0-windows\
+        path: DataStoreExtractor\bin\x64\Release\net5.0-windows\win-x64\publish
