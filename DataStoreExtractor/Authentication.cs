@@ -21,7 +21,7 @@ namespace DataStoreExtractor
             if (File.Exists(cacheFile))
             {
                 await using FileStream readStream = File.OpenRead(cacheFile);
-                var cachedAccount = await JsonSerializer.DeserializeAsync<MicrosoftAccount>(readStream);
+                MicrosoftAccount cachedAccount = await JsonSerializer.DeserializeAsync<MicrosoftAccount>(readStream);
 
                 if (!cachedAccount.DaToken.IsExpired())
                     account = cachedAccount;
@@ -29,14 +29,13 @@ namespace DataStoreExtractor
 
             if (account == null)
             {
-                var token = OAuthPopup.GetAuthToken();
+                string token = OAuthPopup.GetAuthToken();
                 account = MicrosoftAccount.FromOAuthResponse(token);
             }
 
-            var tokenRequest = await account.RequestToken("{28520974-CE92-4F36-A219-3F255AF7E61E}",
-                new SecureScope($"scope={scope}", "TOKEN_BROKER"));
+            BaseToken tokenRequest = await account.RequestToken("{28520974-CE92-4F36-A219-3F255AF7E61E}", new SecureScope($"scope={scope}", "TOKEN_BROKER"));
 
-            var receivedToken = tokenRequest as CompactToken;
+            CompactToken receivedToken = tokenRequest as CompactToken;
 
             Console.WriteLine($"[Microsoft Auth] Received token for scope {scope}.");
 

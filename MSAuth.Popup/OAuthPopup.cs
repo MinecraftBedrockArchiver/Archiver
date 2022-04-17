@@ -57,7 +57,7 @@ namespace MSAuth.Popup
 
             var cookieVisitor = new CookieVisitor(cookies =>
             {
-                var hasFinishedAuth = cookies.Any(cookie => cookie.name == "PPInlineAuth");
+                var hasFinishedAuth = cookies.First(cookie => cookie.name == "Page").value.Contains("finalNext");
 
                 if (hasFinishedAuth)
                 {

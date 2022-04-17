@@ -167,8 +167,8 @@ namespace CoreTool
 
             if (!File.Exists(cacheFile))
             {
-                (string Email, string OauthToken) authResponse = AuthPopupForm.GetOAuthToken();
-                authData = await AuthHelper.Build(authResponse.Email, authResponse.OauthToken, deviceProperties);
+                (string Email, string OAuthToken) authResponse = AuthPopupForm.GetOAuthToken();
+                authData = await AuthHelper.Build(authResponse.Email, authResponse.OAuthToken, deviceProperties);
             }
             else
             {
@@ -202,7 +202,7 @@ namespace CoreTool
             if (File.Exists(cacheFile))
             {
                 await using FileStream readStream = File.OpenRead(cacheFile);
-                var cachedAccount = await JsonSerializer.DeserializeAsync<MicrosoftAccount>(readStream, serializeOptions);
+                MicrosoftAccount cachedAccount = await JsonSerializer.DeserializeAsync<MicrosoftAccount>(readStream, serializeOptions);
 
                 if (!cachedAccount.DaToken.IsExpired())
                     account = cachedAccount;
@@ -210,12 +210,11 @@ namespace CoreTool
 
             if (account == null)
             {
-                var token = OAuthPopup.GetAuthToken();
+                string token = OAuthPopup.GetAuthToken();
                 account = MicrosoftAccount.FromOAuthResponse(token);
             }
 
-            var requestedToken = await account.RequestToken("{28520974-CE92-4F36-A219-3F255AF7E61E}",
-                new SecureScope($"scope={scope}", "TOKEN_BROKER"));
+            BaseToken requestedToken = await account.RequestToken("{28520974-CE92-4F36-A219-3F255AF7E61E}", new SecureScope($"scope={scope}", "TOKEN_BROKER"));
 
             GenericLogger.Write($"Microsoft: Received token for scope {scope}.");
 
