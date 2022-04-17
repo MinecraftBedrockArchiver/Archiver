@@ -3,7 +3,7 @@ name: MSBuild
 on: [push, workflow_dispatch]
 
 env:
-  SOLUTION_FILE_PATH: MinecraftAppxArchiver.sln
+  SOLUTION_FILE_PATH: Archiver.sln
 
   BUILD_CONFIGURATION: Release
   
@@ -38,10 +38,10 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: MinecraftAppxArchiver
-        path: CoreTool\bin\x64\Release\net5.0\
+        path: CoreTool\bin\x64\Release\net5.0-windows\
 
     - name: Archive DataStoreExtractor
       uses: actions/upload-artifact@v2
       with:
         name: DataStoreExtractor
-        path: DataStoreExtractor\bin\x64\Release\net5.0\
+        path: DataStoreExtractor\bin\x64\Release\net5.0-windows\

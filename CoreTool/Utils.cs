@@ -5,8 +5,12 @@ using GooglePlayApi.Popup;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MicrosoftAuth;
+using MicrosoftAuth.Models.Token;
+using MSAuth.Popup;
 
 namespace CoreTool
 {
@@ -14,7 +18,7 @@ namespace CoreTool
     {
         public static readonly Task CompletedTask = Task.FromResult(false);
 
-        public static readonly Log GenericLogger = new Log();
+        public static readonly Log GenericLogger = new Log("Util");
 
         private static readonly JsonSerializerOptions serializeOptions = new JsonSerializerOptions { Converters = { new CultureInfoJsonConverter() } };
 
@@ -190,5 +194,42 @@ namespace CoreTool
 
             return authData;
         }
+
+        public static async Task<string> GetMicrosoftToken(string cacheFile, string scope = "service::dcat.update.microsoft.com::MBI_SSL")
+        {
+            MicrosoftAccount account = null;
+
+            if (File.Exists(cacheFile))
+            {
+                await using FileStream readStream = File.OpenRead(cacheFile);
+                var cachedAccount = await JsonSerializer.DeserializeAsync<MicrosoftAccount>(readStream, serializeOptions);
+
+                if (!cachedAccount.DaToken.IsExpired())
+                    account = cachedAccount;
+            }
+
+            if (account == null)
+            {
+                var token = OAuthPopup.GetAuthToken();
+                account = MicrosoftAccount.FromOAuthResponse(token);
+            }
+
+            var requestedToken = await account.RequestToken("{28520974-CE92-4F36-A219-3F255AF7E61E}",
+                new SecureScope($"scope={scope}", "TOKEN_BROKER"));
+
+            GenericLogger.Write($"Microsoft: Received token for scope {scope}.");
+
+            try
+            {
+                await using FileStream writeStream = File.Create(cacheFile);
+                await JsonSerializer.SerializeAsync(writeStream, account, serializeOptions);
+            }
+            catch (JsonException ex)
+            {
+                GenericLogger.WriteError(ex.Message);
+            }
+
+            return Convert.ToBase64String(Encoding.Unicode.GetBytes(requestedToken.Token));
+        } 
     }
 }

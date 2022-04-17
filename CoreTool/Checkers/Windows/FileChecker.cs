@@ -18,7 +18,7 @@ namespace CoreTool.Checkers.Windows
             WebClient wc = new WebClient();
             wc.DownloadProgressChanged += archive.DownloadProgressChanged;
 
-            string token = archive.GetToken();
+            string token = await Utils.GetMicrosoftToken("msAuthInfo.json");
 
             bool hasChanges = false;
 
