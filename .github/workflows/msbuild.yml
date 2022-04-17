@@ -1,9 +1,9 @@
-name: MSBuild
+name: Build
 
 on: [push, workflow_dispatch]
 
 env:
-  SOLUTION_FILE_PATH: MinecraftAppxArchiver.sln
+  DOTNET_VERSION: "6.0.x"
 
   BUILD_CONFIGURATION: Release
   
@@ -18,30 +18,29 @@ jobs:
       with:
         submodules: true
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Restore NuGet packages
+    - name: Build solution
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
-
-    - name: Fix subproject packages
-      shell: cmd
-      run: |
-        mklink /D ".\StoreLib\packages\" "%cd%\packages"
-
-    - name: Build
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=${{env.BUILD_PLATFORM}} ${{env.SOLUTION_FILE_PATH}}
+      run: dotnet publish -c ${{env.BUILD_CONFIGURATION}} /p:Platform=${{env.BUILD_PLATFORM}} -r win-x64 --no-self-contained
       
     - name: Archive CoreTool
       uses: actions/upload-artifact@v2
       with:
-        name: MinecraftAppxArchiver
-        path: CoreTool\bin\x64\Release\net5.0\
+        name: Archiver
+        path: CoreTool\bin\x64\Release\net6.0-windows\win-x64\publish
 
     - name: Archive DataStoreExtractor
       uses: actions/upload-artifact@v2
       with:
         name: DataStoreExtractor
-        path: DataStoreExtractor\bin\x64\Release\net5.0\
+        path: DataStoreExtractor\bin\x64\Release\net6.0-windows\win-x64\publish
+
+    - name: Archive AppxRenamer
+      uses: actions/upload-artifact@v2
+      with:
+        name: AppxRenamer
+        path: AppxRenamer\bin\x64\Release\net6.0\win-x64\publish

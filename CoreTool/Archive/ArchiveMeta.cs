@@ -113,8 +113,6 @@ namespace CoreTool.Archive
 
         internal ReadOnlyCollection<Item> GetItems() => new ReadOnlyCollection<Item>(metaItems.Values.ToList());
 
-        internal string GetToken(string scope = "service::dcat.update.microsoft.com::MBI_SSL") => Authentication.GetWUToken(scope);
-
         internal string GetPrefix() => $"[{Name}] ";
         #endregion
         

@@ -60,7 +60,7 @@ namespace CoreTool.Loaders.Windows
             if (!hasBeta) return;
 
             // Make sure we have a token, if not don't bother checking for betas
-            string token = archive.GetToken(scope);
+            string token = await Utils.GetMicrosoftToken("msAuthInfo.json", scope);
             if (token == "")
             {
                 archive.Logger.WriteError("Failed to get token! Unable to fetch beta.");
@@ -78,7 +78,7 @@ namespace CoreTool.Loaders.Windows
                 await dcathandler.QueryDCATAsync(this.packageId, IdentiferType.ProductID, authentication);
                 if (dcathandler.Result == DisplayCatalogResult.Found)
                 {
-                    packages = await dcathandler.GetPackagesForProductAsync($"<User>{archive.GetToken()}</User>");
+                    packages = await dcathandler.GetPackagesForProductAsync($"<User>{await Utils.GetMicrosoftToken("msAuthInfo.json")}</User>");
                     foreach (PackageInstance package in packages)
                     {
                         if (!package.PackageMoniker.StartsWith(packageName + "_")) continue;
