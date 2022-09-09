@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace CoreTool
 {
@@ -30,13 +31,19 @@ namespace CoreTool
 
         public static string GetVersionFromName(string name)
         {
-            if (name.ToLower().EndsWith(".appx"))
+            string fileName = Path.GetFileNameWithoutExtension(name);
+            string extension = Path.GetExtension(name).ToLower();
+            if (extension == ".appx")
             {
-                return GetVersionFromNameAppx(name);
+                return GetVersionFromNameAppx(fileName);
             }
-            else if (name.ToLower().EndsWith(".apk"))
+            else if (extension == ".appxbundle")
             {
-                return name.Split("-")[1];
+                return Regex.Replace(fileName.Split("_")[1], ".00?$", "");
+            }
+            else if (extension == ".apk")
+            {
+                return fileName.Split("-")[1];
             }
             else
             {
@@ -84,13 +91,15 @@ namespace CoreTool
 
         public static string GetArchFromName(string name)
         {
-            if (name.ToLower().EndsWith(".appx"))
+            string fileName = Path.GetFileNameWithoutExtension(name);
+            string extension = Path.GetExtension(name).ToLower();
+            if (extension.StartsWith(".appx"))
             {
-                return name.Split("_")[2];
+                return fileName.Split("_")[2];
             }
-            else if (name.ToLower().EndsWith(".apk"))
+            else if (extension == ".apk")
             {
-                return name.Substring(name.IndexOf('-', name.IndexOf('-') + 1) + 1).Split(".")[0];
+                return fileName.Substring(name.IndexOf('-', name.IndexOf('-') + 1) + 1);
             }
             else
             {

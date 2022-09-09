@@ -130,6 +130,38 @@
       ]
     },
     {
+      "Name": "Edu",
+      "Directory": ".\\Windows10 - Microsoft.MinecraftEducationEdition_8wekyb3d8bbwe\\",
+      "Loaders": [
+        {
+          "Class": "CoreTool.Loaders.FileLoader",
+          "Params": [
+            "appx",
+            "appxbundle"
+          ]
+        },
+        {
+          "Class": "CoreTool.Loaders.Windows.StoreLoader",
+          "Params": [
+            "9NBLGGH4R2R6",
+            "Microsoft.MinecraftEducationEdition",
+            false
+          ]
+        }
+      ],
+      "Checkers": [
+        {
+          "Class": "CoreTool.Checkers.MetaChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.Windows.FileChecker"
+        },
+        {
+          "Class": "CoreTool.Checkers.HashChecker"
+        }
+      ]
+    },
+    {
       "Name": "Android-PE",
       "Directory": ".\\Android - com.mojang.minecraftpe\\",
       "Loaders": [

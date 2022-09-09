@@ -44,7 +44,8 @@ namespace CoreTool.Loaders.Windows
                 foreach (PackageInstance package in packages)
                 {
                     if (!package.PackageMoniker.StartsWith(packageName + "_")) continue;
-                    if (package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 0) continue;
+                    if (package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 0
+                        && package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 3) continue;
 
                     string fullPackageName = package.PackageMoniker + ".Appx";
 
@@ -82,7 +83,8 @@ namespace CoreTool.Loaders.Windows
                     foreach (PackageInstance package in packages)
                     {
                         if (!package.PackageMoniker.StartsWith(packageName + "_")) continue;
-                        if (package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 0) continue;
+                        if (package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 0
+                            && package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 3) continue;
 
                         string fullPackageName = package.PackageMoniker + ".Appx";
 
