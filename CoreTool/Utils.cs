@@ -39,7 +39,13 @@ namespace CoreTool
             }
             else if (extension == ".appxbundle")
             {
-                return Regex.Replace(fileName.Split("_")[1], ".00?$", "");
+                string version = fileName.Split("_")[1];
+                if (version.Split(".").Length > 3)
+                {
+                    version = Regex.Replace(version, "\\.00?$", "");
+                }
+
+                return version;
             }
             else if (extension == ".apk")
             {

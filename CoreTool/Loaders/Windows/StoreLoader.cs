@@ -44,10 +44,11 @@ namespace CoreTool.Loaders.Windows
                 foreach (PackageInstance package in packages)
                 {
                     if (!package.PackageMoniker.StartsWith(packageName + "_")) continue;
-                    if (package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 0
-                        && package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 3) continue;
+                    int platformTarget = package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget;
+                    if (platformTarget != 0
+                        && platformTarget != 3) continue;
 
-                    string fullPackageName = package.PackageMoniker + ".Appx";
+                    string fullPackageName = package.PackageMoniker + (platformTarget == 0 ? ".Appx" : ".AppxBundle");
 
                     // Create the meta and store it
                     Item item = new Item(Utils.GetVersionFromName(fullPackageName));
@@ -83,10 +84,11 @@ namespace CoreTool.Loaders.Windows
                     foreach (PackageInstance package in packages)
                     {
                         if (!package.PackageMoniker.StartsWith(packageName + "_")) continue;
-                        if (package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 0
-                            && package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget != 3) continue;
+                        int platformTarget = package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget;
+                        if (platformTarget != 0
+                            && platformTarget != 3) continue;
 
-                        string fullPackageName = package.PackageMoniker + ".Appx";
+                        string fullPackageName = package.PackageMoniker + (platformTarget == 0 ? ".Appx" : ".AppxBundle");
 
                         // Check we haven't got a release version in the beta request
                         if (Utils.GetVersionFromName(fullPackageName) == releaseVer)
