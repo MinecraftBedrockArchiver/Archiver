@@ -52,7 +52,7 @@ namespace CoreTool.Checkers.Windows
                                 success = true;
                                 hasChanges = true;
                             }
-                            catch (WebException ex)
+                            catch (Exception ex)
                             {
                                 // The download threw an exception so let the user know and cleanup
                                 Console.WriteLine();
