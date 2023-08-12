@@ -1,4 +1,8 @@
 # Archiver
+[![License: GPL-3.0](https://img.shields.io/github/license/rtm516/MCXboxBroadcast)](LICENSE)
+[![HitCount](https://hits.dwyl.com/MinecraftBedrockArchiver/Archiver.svg)](http://hits.dwyl.com/MinecraftBedrockArchiver/Archiver)
+[![Discord](https://img.shields.io/discord/1139621390908133396?label=discord&color=5865F2)](https://discord.gg/Tp3tA2kdCN)
+
 This tool automatically archives the latest versions of Minecraft: Bedrock including beta, release and preview files from the store and other sources periodically.
 
 See the StoreLib and WUTokenHelper folders for more information about those libraries.
