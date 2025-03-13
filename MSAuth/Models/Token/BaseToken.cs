@@ -48,8 +48,9 @@ namespace MicrosoftAuth.Models.Token
             return tokenType switch
             {
                 "urn:passport:legacy" => new LegacyToken(element),
-                "urn:passport:compact" => new CompactToken(element),
-                _ => throw new InvalidDataException("Invalid token type received.")
+				"urn:passport:compact" => new CompactToken(element),
+				"urn:passport:delegationcompact" => new CompactToken(element),
+				_ => throw new InvalidDataException("Invalid token type received.")
             };
         }
     }

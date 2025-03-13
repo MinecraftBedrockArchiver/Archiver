@@ -8,7 +8,7 @@ namespace MSAuth.Popup
 {
     public partial class OAuthPopup : Form
     {
-        private static readonly string authPopupUrl = "https://login.live.com/ppsecure/InlineConnect.srf?id=80604&platform=android2.1.0510.1018&client_id=android-app://com.mojang.minecraftearth.H62DKCBHJP6WXXIV7RBFOGOL4NAK4E6Y";
+        private static readonly string authPopupUrl = "https://login.live.com/ppsecure/InlineConnect.srf?id=80604&platform=android2.1.0510.1018&client_id=00000000441cc96b";
 
         private static string OAuthResponseToken { get; set; } = "";
 
