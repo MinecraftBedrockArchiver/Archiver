@@ -14,12 +14,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         submodules: true
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -28,19 +28,19 @@ jobs:
       run: dotnet publish -c ${{env.BUILD_CONFIGURATION}} /p:Platform=${{env.BUILD_PLATFORM}} -r win-x64 --no-self-contained
       
     - name: Archive CoreTool
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Archiver
         path: CoreTool\bin\x64\Release\net6.0-windows\win-x64\publish
 
     - name: Archive DataStoreExtractor
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: DataStoreExtractor
         path: DataStoreExtractor\bin\x64\Release\net6.0-windows\win-x64\publish
 
     - name: Archive AppxRenamer
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: AppxRenamer
         path: AppxRenamer\bin\x64\Release\net6.0\win-x64\publish
