@@ -3,7 +3,7 @@ name: Build
 on: [push, workflow_dispatch]
 
 env:
-  DOTNET_VERSION: "6.0.x"
+  DOTNET_VERSION: "8.0.x"
 
   BUILD_CONFIGURATION: Release
   
@@ -27,20 +27,20 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: dotnet publish -c ${{env.BUILD_CONFIGURATION}} /p:Platform=${{env.BUILD_PLATFORM}} -r win-x64 --no-self-contained
       
-    - name: Archive CoreTool
+    - name: Upload CoreTool
       uses: actions/upload-artifact@v4
       with:
         name: Archiver
-        path: CoreTool\bin\x64\Release\net6.0-windows\win-x64\publish
+        path: CoreTool\bin\x64\Release\net8.0-windows\win-x64\publish
 
-    - name: Archive DataStoreExtractor
+    - name: Upload DataStoreExtractor
       uses: actions/upload-artifact@v4
       with:
         name: DataStoreExtractor
-        path: DataStoreExtractor\bin\x64\Release\net6.0-windows\win-x64\publish
+        path: DataStoreExtractor\bin\x64\Release\net8.0-windows\win-x64\publish
 
-    - name: Archive AppxRenamer
+    - name: Upload AppxRenamer
       uses: actions/upload-artifact@v4
       with:
         name: AppxRenamer
-        path: AppxRenamer\bin\x64\Release\net6.0\win-x64\publish
+        path: AppxRenamer\bin\x64\Release\net8.0\win-x64\publish

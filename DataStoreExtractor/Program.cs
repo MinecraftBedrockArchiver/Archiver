@@ -1,4 +1,5 @@
 ﻿using Microsoft.Isam.Esent.Interop;
+using StoreLib.Models;
 using StoreLib.Services;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,8 @@ namespace DataStoreExtractor
         {
             Dictionary<Guid, string> updatePackageMap = new Dictionary<Guid, string>();
 
+            string database = @"DataStore.edb";
+
             // Setup the edb reading
             JET_INSTANCE instance;
             JET_SESID sesid;
@@ -66,9 +69,9 @@ namespace DataStoreExtractor
 
             Api.JetBeginSession(instance, out sesid, null, null);
 
-            Api.JetAttachDatabase(sesid, @"DataStore.edb", AttachDatabaseGrbit.ReadOnly);
+            Api.JetAttachDatabase(sesid, database, AttachDatabaseGrbit.ReadOnly);
 
-            Api.OpenDatabase(sesid, @"DataStore.edb", out dbid, OpenDatabaseGrbit.ReadOnly);
+            Api.OpenDatabase(sesid, database, out dbid, OpenDatabaseGrbit.ReadOnly);
 
             // Pull from history
             Api.OpenTable(sesid, dbid, "tbHistory", OpenTableGrbit.None, out tableid);
@@ -222,7 +225,7 @@ namespace DataStoreExtractor
             List<string> revisionIds = Enumerable.Repeat("1", updateIds.Count).ToList();
             string token = await Authentication.GetMicrosoftToken("msAuthInfo.json");
 
-            IList<Uri> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{token}</User>");
+            IList<PackageFileInfo> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{token}</User>");
 
             HttpClient client = new HttpClient();
 
@@ -230,16 +233,16 @@ namespace DataStoreExtractor
 
             // Download and check each update
             int i = 0;
-            foreach (Uri uri in Files)
+            foreach (PackageFileInfo file in Files)
             {
-                if (uri.Host == "test.com")
+                if (file.Uri == null)
                 {
                     i++;
                     continue;
                 }
 
                 // Get the header of the download link and see if we get a package name from there so we can skip downloading
-                HttpResponseMessage response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, uri));
+                HttpResponseMessage response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, file.Uri));
                 if (response.Content.Headers.ContentDisposition != null)
                 {
                     if (response.Content.Headers.ContentDisposition.FileName.StartsWith("Microsoft.Minecraft"))
@@ -249,7 +252,7 @@ namespace DataStoreExtractor
                         if (!cleanUp)
                         {
                             Console.WriteLine($"Downloading {updateIds[i]}");
-                            await client.DownloadFileTaskAsync(uri, Path.Join(downloadFolder, response.Content.Headers.ContentDisposition.FileName), (s, e) => Console.Write("\r{0}%", e.ProgressPercentage));
+                            await client.DownloadFileTaskAsync(file.Uri, Path.Join(downloadFolder, response.Content.Headers.ContentDisposition.FileName), (s, e) => Console.Write("\r{0}%", e.ProgressPercentage));
 
                             Console.WriteLine();
                         }
@@ -273,7 +276,7 @@ namespace DataStoreExtractor
                 try
                 {
                     Console.WriteLine($"Downloading {updateIds[i]}");
-                    await client.DownloadFileTaskAsync(uri, downloadLocation, (s, e) => Console.Write("\r{0}%", e.ProgressPercentage));
+                    await client.DownloadFileTaskAsync(file.Uri, downloadLocation, (s, e) => Console.Write("\r{0}%", e.ProgressPercentage));
 
                     Console.WriteLine();
 

@@ -1,4 +1,6 @@
-﻿using CoreTool.Archive;
+﻿using CefSharp.DevTools.Profiler;
+using CoreTool.Archive;
+using StoreLib.Models;
 using StoreLib.Services;
 using System;
 using System.Collections.Generic;
@@ -36,20 +38,26 @@ namespace CoreTool.Checkers.Windows
 
                         // Create the revisionId list (all 1 since MC only uses that) and then fetch the urls
                         revisionIds.AddRange(Enumerable.Repeat("1", updateIds.Count));
-                        IList<Uri> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{token}</User>");
+                        IList<PackageFileInfo> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{token}</User>");
                         bool success = false;
-                        foreach (Uri uri in Files)
+                        foreach (PackageFileInfo file in Files)
                         {
-                            // Check if there is a download link for the file
-                            if (uri.Host == "test.com") continue;
+							// Check if there is a download link for the file
+                            if (file.Uri == null) continue;
 
                             try
                             {
-                                await httpClient.DownloadFileTaskAsync(uri, outPath, archive.DownloadProgressChanged);
+                                await httpClient.DownloadFileTaskAsync(file.Uri, outPath, archive.DownloadProgressChanged);
                                 Console.WriteLine();
                                 archive.Logger.WriteWarn("Calculating file hashes, this may take some time");
                                 arch.Hashes = new FileHashes(outPath);
-                                success = true;
+
+                                if (arch.Hashes.SHA1 != file.Hash)
+                                {
+                                    throw new Exception("File hash does not match");
+                                }
+
+								success = true;
                                 hasChanges = true;
                             }
                             catch (Exception ex)

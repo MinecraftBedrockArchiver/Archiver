@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -25,10 +25,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="cef.redist.x64" Version="100.0.14" />
-    <PackageReference Include="cef.redist.x86" Version="100.0.14" />
-    <PackageReference Include="CefSharp.Common.NETCore" Version="100.0.140" />
-    <PackageReference Include="CefSharp.WinForms.NETCore" Version="100.0.140" />
+    <PackageReference Include="CefSharp.Common.NETCore" Version="136.1.40" />
+    <PackageReference Include="CefSharp.WinForms.NETCore" Version="136.1.40" />
+    <PackageReference Include="chromiumembeddedframework.runtime" Version="136.1.4" />
   </ItemGroup>
 
 </Project>

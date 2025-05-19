@@ -21,17 +21,10 @@ namespace CoreTool.Checkers
                     if (!File.Exists(filePath)) continue;
 
                         
-                    if (string.IsNullOrEmpty(arch.Hashes.MD5))
+                    if (arch.Hashes.HasMissing())
                     {
-                        archive.Logger.WriteWarn($"Missing MD5 hash for {arch.FileName}, calculating...");
-                        arch.Hashes.CalculateMD5(filePath);
-                        hasChanges = true;
-                    }
-
-                    if (string.IsNullOrEmpty(arch.Hashes.SHA256))
-                    {
-                        archive.Logger.WriteWarn($"Missing SHA256 hash for {arch.FileName}, calculating...");
-                        arch.Hashes.CalculateSHA256(filePath);
+                        archive.Logger.WriteWarn($"Missing one or more hashes for {arch.FileName}, calculating...");
+                        arch.Hashes.CalculateHashes(filePath);
                         hasChanges = true;
                     }
                 }

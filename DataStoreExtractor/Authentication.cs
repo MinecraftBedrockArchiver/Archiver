@@ -33,11 +33,9 @@ namespace DataStoreExtractor
                 account = MicrosoftAccount.FromOAuthResponse(token);
             }
 
-            BaseToken tokenRequest = await account.RequestToken("{28520974-CE92-4F36-A219-3F255AF7E61E}", new SecureScope($"scope={scope}", "TOKEN_BROKER"));
+            BaseToken requestedToken = await account.RequestToken("{28520974-CE92-4F36-A219-3F255AF7E61E}", new SecureScope($"scope={scope}", "TOKEN_BROKER"));
 
-            CompactToken receivedToken = tokenRequest as CompactToken;
-
-            Console.WriteLine($"[Microsoft Auth] Received token for scope {scope}.");
+            Console.WriteLine($"Microsoft: Received token for scope {scope}.");
 
             try
             {
@@ -49,7 +47,7 @@ namespace DataStoreExtractor
                 Console.WriteLine(ex.Message);
             }
 
-            return Convert.ToBase64String(Encoding.Unicode.GetBytes(receivedToken.Token));
+            return Convert.ToBase64String(Encoding.Unicode.GetBytes(requestedToken.Token));
         }
     }
 }
