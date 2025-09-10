@@ -11,8 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MSAuth.Popup\MicrosoftAuth.Popup.csproj" />
-    <ProjectReference Include="..\MSAuth\MicrosoftAuth.csproj" />
     <ProjectReference Include="..\StoreLib\StoreLib\StoreLib.csproj" />
   </ItemGroup>
 

@@ -1,16 +1,9 @@
-﻿using GooglePlayApi;
-using GooglePlayApi.Helpers;
-using GooglePlayApi.Models;
-using GooglePlayApi.Popup;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using MicrosoftAuth;
-using MicrosoftAuth.Models.Token;
-using MSAuth.Popup;
 using System.Net.Http;
 using System.Net;
 using System.Collections.Generic;
@@ -26,8 +19,6 @@ namespace CoreTool
         public static readonly Task CompletedTask = Task.FromResult(false);
 
         public static readonly Log GenericLogger = new Log("Util");
-
-        private static readonly JsonSerializerOptions serializeOptions = new JsonSerializerOptions { Converters = { new CultureInfoJsonConverter() } };
 
         public static string GetVersionFromName(string name)
         {
@@ -46,10 +37,6 @@ namespace CoreTool
                 }
 
                 return version;
-            }
-            else if (extension == ".apk")
-            {
-                return fileName.Split("-")[1];
             }
             else
             {
@@ -102,10 +89,6 @@ namespace CoreTool
             if (extension.StartsWith(".appx"))
             {
                 return fileName.Split("_")[2];
-            }
-            else if (extension == ".apk")
-            {
-                return fileName.Substring(name.IndexOf('-', name.IndexOf('-') + 1) + 1);
             }
             else
             {
@@ -180,76 +163,6 @@ namespace CoreTool
             }
 
             return lx - ly;
-        }
-
-        public static async Task<AuthData> GetGooglePlayAuthData(string cacheFile, string deviceProperties = "octopus.properties")
-        {
-            AuthData authData;
-
-            if (!File.Exists(cacheFile))
-            {
-                (string Email, string OAuthToken) authResponse = AuthPopupForm.GetOAuthToken();
-                authData = await AuthHelper.Build(authResponse.Email, authResponse.OAuthToken, deviceProperties);
-            }
-            else
-            {
-                // Get cached auth
-                using (FileStream readStream = File.OpenRead(cacheFile))
-                    authData = await JsonSerializer.DeserializeAsync<AuthData>(readStream, serializeOptions);
-
-                // Re-aquire tokens
-                // TODO: Check if they are still valid
-                authData = await AuthHelper.Build(authData.Email, authData.AasToken, deviceProperties);
-            }
-
-            // Save latest auth to cache file
-            try
-            {
-                using (FileStream writeStream = File.Create(cacheFile))
-                    await JsonSerializer.SerializeAsync(writeStream, authData, serializeOptions);
-            }
-            catch (JsonException ex)
-            {
-                GenericLogger.WriteError(ex.Message);
-            }
-
-            return authData;
-        }
-
-        public static async Task<string> GetMicrosoftToken(string cacheFile, string scope = "service::dcat.update.microsoft.com::MBI_SSL")
-        {
-            MicrosoftAccount account = null;
-
-            if (File.Exists(cacheFile))
-            {
-                await using FileStream readStream = File.OpenRead(cacheFile);
-                MicrosoftAccount cachedAccount = await JsonSerializer.DeserializeAsync<MicrosoftAccount>(readStream, serializeOptions);
-
-                if (!cachedAccount.DaToken.IsExpired())
-                    account = cachedAccount;
-            }
-
-            if (account == null)
-            {
-                string token = OAuthPopup.GetAuthToken();
-                account = MicrosoftAccount.FromOAuthResponse(token);
-            }
-
-            BaseToken requestedToken = await account.RequestToken("{28520974-CE92-4F36-A219-3F255AF7E61E}", new SecureScope($"scope={scope}", "TOKEN_BROKER"));
-
-            GenericLogger.Write($"Microsoft: Received token for scope {scope}.");
-
-            try
-            {
-                await using FileStream writeStream = File.Create(cacheFile);
-                await JsonSerializer.SerializeAsync(writeStream, account, serializeOptions);
-            }
-            catch (JsonException ex)
-            {
-                GenericLogger.WriteError(ex.Message);
-            }
-
-            return Convert.ToBase64String(Encoding.Unicode.GetBytes(requestedToken.Token));
         }
     }
 }

@@ -9,15 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreLib", "StoreLib\StoreL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataStoreExtractor", "DataStoreExtractor\DataStoreExtractor.csproj", "{335026DF-3B85-4EF0-892D-4DC542E619DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GooglePlayApi", "GooglePlayApi\GooglePlayAPI\GooglePlayApi.csproj", "{F421EB33-9DD9-4A11-9382-A7BF058EC721}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GooglePlayApi.Popup", "GooglePlayApi\GooglePlayApi.Popup\GooglePlayApi.Popup.csproj", "{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppxRenamer", "AppxRenamer\AppxRenamer.csproj", "{916983C2-E82D-47C9-B40C-19EF88AD6799}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrosoftAuth.Popup", "MSAuth.Popup\MicrosoftAuth.Popup.csproj", "{2F758E5E-F062-4AFB-B6F6-8F1AADF3A293}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrosoftAuth", "MSAuth\MicrosoftAuth.csproj", "{CA32B528-A194-4DAB-BC53-47988F225F5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,26 +29,10 @@ Global
 		{335026DF-3B85-4EF0-892D-4DC542E619DB}.Debug|x64.Build.0 = Debug|x64
 		{335026DF-3B85-4EF0-892D-4DC542E619DB}.Release|x64.ActiveCfg = Release|x64
 		{335026DF-3B85-4EF0-892D-4DC542E619DB}.Release|x64.Build.0 = Release|x64
-		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Debug|x64.ActiveCfg = Debug|x64
-		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Debug|x64.Build.0 = Debug|x64
-		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Release|x64.ActiveCfg = Release|x64
-		{F421EB33-9DD9-4A11-9382-A7BF058EC721}.Release|x64.Build.0 = Release|x64
-		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Debug|x64.Build.0 = Debug|Any CPU
-		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Release|x64.ActiveCfg = Release|Any CPU
-		{11DF238A-1B0C-4106-9915-D2E8AC83CA5D}.Release|x64.Build.0 = Release|Any CPU
 		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Debug|x64.ActiveCfg = Debug|x64
 		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Debug|x64.Build.0 = Debug|x64
 		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Release|x64.ActiveCfg = Release|x64
 		{916983C2-E82D-47C9-B40C-19EF88AD6799}.Release|x64.Build.0 = Release|x64
-		{2F758E5E-F062-4AFB-B6F6-8F1AADF3A293}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2F758E5E-F062-4AFB-B6F6-8F1AADF3A293}.Debug|x64.Build.0 = Debug|Any CPU
-		{2F758E5E-F062-4AFB-B6F6-8F1AADF3A293}.Release|x64.ActiveCfg = Release|Any CPU
-		{2F758E5E-F062-4AFB-B6F6-8F1AADF3A293}.Release|x64.Build.0 = Release|Any CPU
-		{CA32B528-A194-4DAB-BC53-47988F225F5F}.Debug|x64.ActiveCfg = Debug|x64
-		{CA32B528-A194-4DAB-BC53-47988F225F5F}.Debug|x64.Build.0 = Debug|x64
-		{CA32B528-A194-4DAB-BC53-47988F225F5F}.Release|x64.ActiveCfg = Release|x64
-		{CA32B528-A194-4DAB-BC53-47988F225F5F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

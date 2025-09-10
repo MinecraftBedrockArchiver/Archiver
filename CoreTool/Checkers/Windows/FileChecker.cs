@@ -1,5 +1,4 @@
-﻿using CefSharp.DevTools.Profiler;
-using CoreTool.Archive;
+﻿using CoreTool.Archive;
 using StoreLib.Models;
 using StoreLib.Services;
 using System;
@@ -20,8 +19,6 @@ namespace CoreTool.Checkers.Windows
 
             HttpClient httpClient = new HttpClient();
 
-            string token = await Utils.GetMicrosoftToken("msAuthInfo.json");
-
             bool hasChanges = false;
 
             foreach (Item item in archive.GetItems())
@@ -38,7 +35,7 @@ namespace CoreTool.Checkers.Windows
 
                         // Create the revisionId list (all 1 since MC only uses that) and then fetch the urls
                         revisionIds.AddRange(Enumerable.Repeat("1", updateIds.Count));
-                        IList<PackageFileInfo> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{token}</User>");
+                        IList<PackageFileInfo> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds);
                         bool success = false;
                         foreach (PackageFileInfo file in Files)
                         {
