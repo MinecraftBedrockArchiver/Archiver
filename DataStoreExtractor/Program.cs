@@ -223,9 +223,8 @@ namespace DataStoreExtractor
         {
             // Get the URLs
             List<string> revisionIds = Enumerable.Repeat("1", updateIds.Count).ToList();
-            string token = await Authentication.GetMicrosoftToken("msAuthInfo.json");
 
-            IList<PackageFileInfo> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds, $"<User>{token}</User>");
+            IList<PackageFileInfo> Files = await FE3Handler.GetFileUrlsAsync(updateIds, revisionIds);
 
             HttpClient client = new HttpClient();
 
