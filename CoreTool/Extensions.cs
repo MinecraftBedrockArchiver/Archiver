@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -71,5 +72,18 @@ namespace CoreTool
                 }
             }
         }
-    }
+
+		public async static Task<JsonElement> GetJsonAsync(this HttpClient httpClient, string url, string auth = "")
+		{
+			using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+			{
+				if (!string.IsNullOrEmpty(auth)) request.Headers.Add("Authorization", auth);
+
+				var response = await httpClient.SendAsync(request);
+
+				var responseString = await response.Content.ReadAsStringAsync();
+				return JsonDocument.Parse(responseString).RootElement;
+			}
+		}
+	}
 }

@@ -18,8 +18,9 @@ namespace CoreTool.Archive
         public Log Logger { get; internal set; }
         public string Name { get; internal set; }
         public string ArchiveMetaFile { get; internal set; }
+        public string? PackageId { get; internal set; }
 
-        private SortedDictionary<string, Item> metaItems;
+		private SortedDictionary<string, Item> metaItems;
 
         private List<ILoader> loaders;
         private List<IChecker> checkers;
@@ -54,7 +55,20 @@ namespace CoreTool.Archive
             this.loaders = loaders;
             this.checkers = checkers;
 
-            metaItems = new SortedDictionary<string, Item>(new VersionComparer());
+			// Locate package id if we have a store loader
+            foreach (ILoader loader in loaders)
+            {
+                if (loader is Loaders.Windows.StoreLoader storeLoader)
+                {
+                    this.PackageId = storeLoader.PackageId;
+                }
+                else if (loader is Loaders.Windows.XboxLoader xboxLoader)
+                {
+                    this.PackageId = xboxLoader.PackageId;
+                }
+			}
+
+			metaItems = new SortedDictionary<string, Item>(new VersionComparer());
 
             // Load the meta or create a new one
             if (File.Exists(ArchiveMetaFile))

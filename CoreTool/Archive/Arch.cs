@@ -11,19 +11,9 @@ namespace CoreTool.Archive
 
         public Arch() { }
 
-        public Arch(string fileName)
-        {
-            FileName = fileName;
-            Hashes = new FileHashes();
-            UpdateIds = new List<string>();
-        }
+        public Arch(string fileName) : this(fileName, new()) { }
 
-        public Arch(string fileName, List<string> updateIds)
-        {
-            FileName = fileName;
-            Hashes = new FileHashes();
-            UpdateIds = updateIds;
-        }
+        public Arch(string fileName, List<string> updateIds) : this(fileName, new(), updateIds) { }
 
         public Arch(string fileName, FileHashes hashes, List<string> updateIds)
         {

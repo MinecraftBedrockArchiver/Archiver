@@ -10,13 +10,13 @@ namespace CoreTool.Loaders.Windows
 {
     internal class StoreLoader : ILoader
     {
-        private string packageId;
-        private string packageName;
+        public string PackageId { get; private set; }
+		public string PackageName { get; private set; }
 
-        public StoreLoader(string packageId, string packageName)
+		public StoreLoader(string packageId, string packageName)
         {
-            this.packageId = packageId;
-            this.packageName = packageName;
+            this.PackageId = packageId;
+            this.PackageName = packageName;
         }
 
         public async Task Load(ArchiveMeta archive)
@@ -31,13 +31,13 @@ namespace CoreTool.Loaders.Windows
             archive.Logger.Write("Loading store...");
 
             // Grab the packages for the release
-            await dcathandler.QueryDCATAsync(this.packageId);
+            await dcathandler.QueryDCATAsync(this.PackageId);
             if (dcathandler.Result == DisplayCatalogResult.Found)
             {
                 packages = await dcathandler.GetPackagesForProductAsync();
                 foreach (PackageInstance package in packages)
                 {
-                    if (!package.PackageMoniker.StartsWith(packageName + "_")) continue;
+                    if (!package.PackageMoniker.StartsWith(this.PackageName + "_")) continue;
                     int platformTarget = package.ApplicabilityBlob.ContentTargetPlatforms[0].PlatformTarget;
                     if (platformTarget != 0
                         && platformTarget != 3) continue;

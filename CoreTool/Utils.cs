@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Text.RegularExpressions;
+using StoreLib.Services;
 
 namespace CoreTool
 {
@@ -24,7 +25,7 @@ namespace CoreTool
         {
             string fileName = Path.GetFileNameWithoutExtension(name);
             string extension = Path.GetExtension(name).ToLower();
-            if (extension == ".appx")
+            if (extension == ".appx" || extension == ".msixvc")
             {
                 return GetVersionFromNameAppx(fileName);
             }
@@ -86,7 +87,7 @@ namespace CoreTool
         {
             string fileName = Path.GetFileNameWithoutExtension(name);
             string extension = Path.GetExtension(name).ToLower();
-            if (extension.StartsWith(".appx"))
+            if (extension.StartsWith(".appx") || extension == ".msixvc")
             {
                 return fileName.Split("_")[2];
             }
@@ -164,5 +165,17 @@ namespace CoreTool
 
             return lx - ly;
         }
+
+        public async static Task<string> GetPackageContentId(string packageId)
+		{
+			// Create the dcat handler in production mode
+			DisplayCatalogHandler dcathandler = DisplayCatalogHandler.ProductionConfig();
+
+			// Grab the packages for the release
+			await dcathandler.QueryDCATAsync(packageId);
+			if (dcathandler.Result != StoreLib.Models.DisplayCatalogResult.Found) return null;
+
+			return dcathandler.ProductListing.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages[0].ContentId;
+		}
     }
 }
